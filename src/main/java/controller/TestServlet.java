@@ -29,7 +29,6 @@ public class TestServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<String> woorden = Arrays.asList(new String[]{"test", "test2", "test3"});
-        //PersonRepository repo = new PersonRepository();
         Person person = new Person();
         person.setAddress("straat 40");
         person.setName("Alex");
