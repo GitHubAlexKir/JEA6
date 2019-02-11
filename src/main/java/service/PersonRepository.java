@@ -6,6 +6,8 @@ import javax.annotation.Resource;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -29,5 +31,19 @@ public class PersonRepository {
         return name;
 
     }
+    public String savePerson(Person person)
+    {
+        System.out.println("saving user");
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("myPU");
+        EntityManager em = entityManagerFactory.createEntityManager();
+        person.setId(Long.valueOf(2));
+        em.getTransaction().begin();
+        em.persist(person);
+        em.getTransaction().commit();
+        entityManagerFactory.close();
+        return "Gelukt";
+
+    }
+
 
 }
