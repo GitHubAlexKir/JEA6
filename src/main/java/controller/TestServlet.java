@@ -29,12 +29,15 @@ public class TestServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<String> woorden = Arrays.asList(new String[]{"test", "test2", "test3"});
+        String name = request.getParameter("name");
+        String address = request.getParameter("address");
         Person person = new Person();
-        person.setAddress("straat 40");
-        person.setName("Alex");
+        person.setAddress(address);
+        person.setName(name);
         //repo.create(person);
         repo.create(person);
         request.setAttribute("woorden", woorden);
+        request.setAttribute("users",repo.findAll());
         RequestDispatcher view = request.getRequestDispatcher("view/woorden.jsp");
         view.forward(request, response);
 
