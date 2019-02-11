@@ -10,13 +10,15 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
+import javax.transaction.UserTransaction;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class PersonRepository {
+public class PersonRepository  {
 
     public String test() throws NamingException, SQLException {
         InitialContext ctx = new InitialContext();
@@ -36,11 +38,8 @@ public class PersonRepository {
         System.out.println("saving user");
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("myPU");
         EntityManager em = entityManagerFactory.createEntityManager();
-        person.setId(Long.valueOf(2));
-        em.getTransaction().begin();
         em.persist(person);
-        em.getTransaction().commit();
-        entityManagerFactory.close();
+
         return "Gelukt";
 
     }
