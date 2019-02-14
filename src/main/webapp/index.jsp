@@ -1,6 +1,6 @@
 <html>
 <body>
-<h2>Hello World!</h2>
+<h2>Command line deployment Hello World!</h2>
 <form action="test" method="POST">
     name:<br>
     <input type="text" name="name" value="Alex Kir">
