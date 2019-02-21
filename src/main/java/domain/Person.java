@@ -4,12 +4,10 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "testing")
 public class Person implements Serializable {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
-
    private Long id;
 
    private String name;

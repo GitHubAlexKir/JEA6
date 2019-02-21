@@ -3,6 +3,7 @@
     <persistence-unit name="myPU" transaction-type="JTA">
         <jta-data-source>jdbc/mysqlpool</jta-data-source>
         <class>domain.Person</class>
+        <class>domain.Account</class>
         <properties>
             <property name="javax.persistence.schema-generation.database.action" value="create"/>
         </properties>
