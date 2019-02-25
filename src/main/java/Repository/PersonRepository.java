@@ -1,8 +1,10 @@
 package Repository;
 
+import Interceptor.SimpleInterceptor;
 import domain.Person;
 
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
@@ -12,6 +14,8 @@ import java.util.List;
 import static javax.transaction.Transactional.TxType.REQUIRED;
 
 @Stateless
+
+@Interceptors(SimpleInterceptor.class)
 public class PersonRepository {
 
    @PersistenceContext(unitName = "myPU")
@@ -19,6 +23,7 @@ public class PersonRepository {
 
    @Transactional(REQUIRED)
    public void create(Person person) {
+       System.out.println(person.toString());
        em.persist(person);
    }
 
