@@ -30,4 +30,12 @@ public class AccountController {
     {
         return repo.find(id);
     }
+
+    @POST
+    @Path("/save")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    public String save(Account account) {
+        return repo.create(account);
+    }
 }
