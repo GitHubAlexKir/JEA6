@@ -1,4 +1,5 @@
 import com.google.gson.Gson;
+import domain.Item;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -20,15 +21,6 @@ public class ItemControllerTest {
         RestAssured.baseURI = "http://localhost/1";
         RestAssured.port = 8080;
     }
-
-    @Test
-    public void testGetItemSuccess() {
-        get("/api/item/get/1")
-                .then()
-                .body("id", equalTo(1))
-                .body("price",equalTo(29.99))
-                .body("name", equalTo("Whiskey"));
-    }
     @Test
     public void testCreateItemSuccess() {
         Gson gson = new Gson();
@@ -43,7 +35,17 @@ public class ItemControllerTest {
                 .post( "/api/item/add");
         System.out.println("POST Response\n" + response.asString());
         // tests
-        response.then().body("id", Matchers.any(Integer.class));
-        response.then().body("name", Matchers.is("Lisa"));
+        response.then().body("id", Matchers.any(Long.class));
+        response.then().body("name", Matchers.is("Whiskey"));
     }
+
+    @Test
+    public void testGetItemSuccess() {
+        get("/api/item/get/1")
+                .then()
+                .body("id", equalTo(1))
+                .body("price",equalTo(29.99))
+                .body("name", equalTo("Whiskey"));
+    }
+
 }
