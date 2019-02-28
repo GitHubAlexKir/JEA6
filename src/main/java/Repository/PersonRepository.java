@@ -22,9 +22,10 @@ public class PersonRepository {
    private EntityManager em;
 
    @Transactional(REQUIRED)
-   public void create(Person person) {
+   public String create(Person person) {
        System.out.println(person.toString());
        em.persist(person);
+       return person.toString();
    }
 
    public List<Person> findAll() {

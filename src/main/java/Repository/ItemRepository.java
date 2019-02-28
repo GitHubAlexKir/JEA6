@@ -22,13 +22,15 @@ public class ItemRepository {
    private EntityManager em;
 
    @Transactional(REQUIRED)
-   public void create(Item item) {
+   public Item create(Item item) {
        System.out.println(item.toString());
        em.persist(item);
+       item.setId(1);
+       return item;
    }
 
    public List<Item> findAll() {
-       return em.createQuery("SELECT i FROM Item i", Item.class)
+       return em.createQuery("SELECT i FROM item i", Item.class)
                       .getResultList();
    }
 

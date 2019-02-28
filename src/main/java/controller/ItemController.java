@@ -1,5 +1,6 @@
 package controller;
 
+import Repository.ItemRepository;
 import domain.Item;
 
 import javax.ejb.EJB;
@@ -40,8 +41,8 @@ public class ItemController {
     @POST
     @Path("/save")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
-    public String save(Item item) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Item save(Item item) {
         return repo.create(item);
     }
 }

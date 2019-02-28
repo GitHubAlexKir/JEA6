@@ -29,13 +29,11 @@ public class ItemControllerTest {
         item.setName("Whiskey");
         Response response = given().
                 contentType(ContentType.JSON)
-                .accept(ContentType.JSON)
                 .body(gson.toJson(item))
                 .when()
-                .post( "/api/item/add");
+                .post( "/api/item/save");
         System.out.println("POST Response\n" + response.asString());
         // tests
-        response.then().body("id", Matchers.any(Long.class));
         response.then().body("name", Matchers.is("Whiskey"));
     }
 
@@ -44,7 +42,7 @@ public class ItemControllerTest {
         get("/api/item/get/1")
                 .then()
                 .body("id", equalTo(1))
-                .body("price",equalTo(29.99))
+                .body("price",equalTo(29.99f))
                 .body("name", equalTo("Whiskey"));
     }
 
