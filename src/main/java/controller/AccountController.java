@@ -13,7 +13,6 @@ import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
 @Path("/account")
-@DeclareRoles("admin")
 public class AccountController {
     @EJB
     AccountRepository repo;
@@ -38,7 +37,6 @@ public class AccountController {
     @GET
     @Path("/get/all")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed("admin")
     public List<Account> getAccount()
     {
         return repo.findAll();

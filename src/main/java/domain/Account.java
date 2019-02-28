@@ -19,6 +19,9 @@ public class Account implements Serializable {
     @NotNull(message = "Password cannot be null")
     private String password;
 
+    @NotNull(message = "Role cannot be null")
+    private String role;
+
     @Min(value = 18, message = "Age should not be less than 18")
     @Max(value = 150, message = "Age should not be greater than 150")
     private int age;
@@ -66,6 +69,14 @@ public class Account implements Serializable {
         this.email = email;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
         return "Account{" +
@@ -73,6 +84,7 @@ public class Account implements Serializable {
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 ", email='" + email + '\'' +
+                ", role='" + role + '\'' +
                 '}';
     }
 }

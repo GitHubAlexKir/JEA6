@@ -20,7 +20,8 @@ public class AccountControllerTest {
                 .body("id", equalTo(1))
                 .body("age",equalTo(19))
                 .body("email", equalTo("a@h.nl"))
-                .body("name", equalTo("Alex"))
-                .body("password", equalTo("123456789011"));
+                .body("name", equalTo("alex"))
+                .body("role", equalTo("Admin"))
+                .body("password", equalTo("2323465757685686"));
     }
 }
