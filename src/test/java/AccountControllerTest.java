@@ -18,6 +18,7 @@ public class AccountControllerTest {
         get("/api/account/get/1")
                 .then()
                 .body("id", equalTo(1))
+                .body("age",equalTo(19))
                 .body("email", equalTo("a@h.nl"))
                 .body("name", equalTo("Alex"))
                 .body("password", equalTo("123456789011"));
