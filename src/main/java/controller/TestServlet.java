@@ -1,6 +1,7 @@
 package controller;
 
 import Interceptor.SimpleInterceptor;
+import Repository.UserRepository;
 import domain.Person;
 import Repository.PersonRepository;
 
@@ -16,13 +17,15 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-@WebServlet(name = "TestServlet", urlPatterns = {"/test"})
+@WebServlet(name = "TestServlet", urlPatterns = {"/admin"})
 public class TestServlet extends HttpServlet {
     @EJB
     PersonRepository repo;
+    @EJB
+    UserRepository userRepo;
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-                RequestDispatcher view = request.getRequestDispatcher("index.jsp");
+                RequestDispatcher view = request.getRequestDispatcher("createAccount.jsp");
                 view.forward(request, response);
     }
     @Override
@@ -33,7 +36,7 @@ public class TestServlet extends HttpServlet {
         person.setAddress(address);
         person.setName(name);
         repo.create(person);
-        request.setAttribute("users",repo.findAll());
+        request.setAttribute("users",userRepo.findAll());
         RequestDispatcher view = request.getRequestDispatcher("view/users.jsp");
         view.forward(request, response);
 

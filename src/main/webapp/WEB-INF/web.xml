@@ -2,5 +2,66 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-  <display-name>Archetype Created Web Application</display-name>
+  <display-name>Authentication</display-name>
+  <welcome-file-list>
+    <welcome-file>welcome.jsp</welcome-file>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
+    <!--  login Config -->
+  <login-config>
+    <auth-method>FORM</auth-method>
+    <realm-name>userMgmtJdbcRealm</realm-name>
+    <form-login-config>
+      <form-login-page>/WEB-INF/login.jsp</form-login-page>
+      <form-error-page>/WEB-INF/login.jsp?auth-error=1</form-error-page>
+    </form-login-config>
+  </login-config>
+
+    <!--  error not authorized page -->
+  <error-page>
+    <error-code>403</error-code>
+    <location>/not-authorized.html</location>
+  </error-page>
+  <error-page>
+    <error-code>401</error-code>
+    <location>/not-authorized.html</location>
+  </error-page>
+
+
+    <!--  authenticatie User/Admin -->
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>Secured Content USER and ADMIN</web-resource-name>
+      <url-pattern>/secure/*</url-pattern>
+    </web-resource-collection>
+
+    <auth-constraint>
+      <role-name>USER</role-name>
+      <role-name>ADMINISTRATOR</role-name>
+    </auth-constraint>
+  </security-constraint>
+    <!--  authenticatie Admin -->
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>Secured Content Admin</web-resource-name>
+      <url-pattern>/api/admin/*</url-pattern>
+        <url-pattern>/admin</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>ADMINISTRATOR</role-name>
+    </auth-constraint>
+  </security-constraint>
+    <!-- roles -->
+  <security-role>
+    <role-name>ADMINISTRATOR</role-name>
+  </security-role>
+  <security-role>
+    <role-name>USER</role-name>
+  </security-role>
+  <security-role>
+    <role-name>DEFAULT</role-name>
+  </security-role>
 </web-app>
