@@ -42,12 +42,12 @@ public class AuthController {
     @POST
     @Path("login")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(@FormParam("email") String email, @FormParam("password") String password,
+    public Response login(UserLogin userlogin,
                           @Context HttpServletRequest req) {
         JsonResponse json = new JsonResponse();
         if(req.getUserPrincipal() == null){
             try {
-                req.login(email, password);
+                req.login(userlogin.getEmail(), userlogin.getPassword());
             } catch (ServletException e) {
                 e.printStackTrace();
                 json.setStatus("FAILED");
@@ -56,7 +56,7 @@ public class AuthController {
             }
         }
         json.setStatus("SUCCESS");
-        User user = userRepository.find(email);
+        User user = userRepository.find(userlogin.getEmail());
         json.setData(user);
         userRepository.detach(user);
         user.setPassword(null);
