@@ -13,11 +13,31 @@
         <title>Welcome Page</title>
       </head>
 <body>
-<h2>home!</h2>
-<div id="app">
-    <login></login>
+<div>
+    <h1>secured Web Application</h1>
+        <a href="<%=request.getContextPath() %>/secure/index.jsp" >go to secured page</a>
+        <br/><br/><br/>
+        <div class="login">
+         <form action="api/auth/login" method="POST">
+            <fieldset>
+              <legend>Login</legend>
+                  
+              <div>
+                <label for="email">Email</label>
+                <input type="text" id="email" name="email" />
+              </div>
+              <div>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password"/>
+              </div>
+                  
+              <div class="buttonRow">
+                <input type="submit" value="Login" />
+              </div>
+                
+            </fieldset>
+          </form>
+        </div>
 </div>
-
-<script src="./js/app.js"></script>
 </body>
 </html>
