@@ -45,4 +45,9 @@ public class UserRepository {
     public void detach(User user) {
         em.detach(user);
     }
+
+    public boolean login(String email, String password) {
+        System.out.println(find(email).getPassword().equals(password));
+        return find(email).getPassword().equals(password);
+    }
 }

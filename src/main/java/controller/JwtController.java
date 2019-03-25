@@ -5,6 +5,7 @@ import config.JwtTokenUtil;
 import domain.JsonResponse;
 import domain.User;
 import domain.UserLogin;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -36,21 +37,18 @@ public class JwtController {
         JsonResponse json = new JsonResponse();
         String token = null;
         json.setData(userLogin);
-        if(req.getUserPrincipal() == null){
-            try {
-                req.login(userLogin.getEmail(), userLogin.getPassword());
-                User user = repo.find(userLogin.getEmail());
-                token = jwtTokenUtil.generateToken(user);
-                json.setData(token);
-            } catch (ServletException e) {
-                e.printStackTrace();
-                json.setStatus("FAILED");
-                json.setErrorMsg("Authentication failed");
-                return Response.ok().entity(json).build();
-            }
+        if (repo.login(userLogin.getEmail(), DigestUtils.sha512Hex(userLogin.getPassword()))) {
+            User user = repo.find(userLogin.getEmail());
+            token = jwtTokenUtil.generateToken(user);
+            json.setData(token);
+            json.setStatus("SUCCESS");
+            return Response.ok().header(AUTHORIZATION, "Bearer " + token).entity(json).build();
         }
-        json.setStatus("SUCCESS");
-        return Response.ok().header(AUTHORIZATION, "Bearer " + token).entity(json).build();
+        else {
+            json.setStatus("FAILED");
+            json.setErrorMsg("Authentication failed");
+            return Response.status(401).entity(json).build();
+        }
     }
 
     @POST

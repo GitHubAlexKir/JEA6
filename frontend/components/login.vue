@@ -33,7 +33,6 @@
          </div>
         </div>
     </div>
-   </div>
 </template>
 
 <script>
@@ -50,13 +49,16 @@
         methods: {
         loginSubmit(){
             axios.post('/1/api/jwt/login', this.UserLogin).then(({data}) => {
-                                localStorage.setItem('token', data.data);
-                                console.log(data.data);
-                                alert(data.data);
-                            }).catch((error) => {
-                                 this.wrong = true;
-                            });
-                     }
+                    localStorage.setItem('token', data.data);
+                    console.log(data.data);
+                    console.log(data);
+                    this.wrong = false;
+                    location.reload();
+
+            }).catch(() => {
+                this.wrong = true;
+            })
+        }
         }
     }
 </script>
