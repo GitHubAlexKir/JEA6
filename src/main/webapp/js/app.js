@@ -2063,12 +2063,29 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'home',
   data: function data() {
     return {
-      user: {}
+      user: {},
+      itemid: 2,
+      item: {}
     };
   },
   created: function created() {
@@ -2083,6 +2100,14 @@ __webpack_require__.r(__webpack_exports__);
     logout: function logout() {
       localStorage.clear();
       window.location = '/1/';
+    },
+    getItem: function getItem() {
+      var _this2 = this;
+
+      _axios__WEBPACK_IMPORTED_MODULE_0__["default"].get('api/item/get/' + this.itemid).then(function (_ref2) {
+        var data = _ref2.data;
+        _this2.item = data.item;
+      });
     }
   }
 });
@@ -62662,7 +62687,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _vm.user
+    _vm.user.email !== null
       ? _c(
           "div",
           { staticClass: "col-md-6" },
@@ -62695,6 +62720,75 @@ var render = function() {
         )
       : _vm._e(),
     _vm._v(" "),
+    _vm.item.id !== null
+      ? _c(
+          "div",
+          { staticClass: "col-md-6" },
+          [
+            _c("h4", [
+              _c("b", [_vm._v(" id: ")]),
+              _vm._v(_vm._s(_vm.item.id) + "\n        ")
+            ]),
+            _vm._v(" "),
+            _c("h4", [
+              _c("b", [_vm._v(" price: ")]),
+              _vm._v(_vm._s(_vm.item.price) + "\n        ")
+            ]),
+            _vm._v(" "),
+            _c("h4", [
+              _c("b", [_vm._v(" name: ")]),
+              _vm._v(_vm._s(_vm.item.name) + "\n        ")
+            ]),
+            _vm._v(" "),
+            _vm._m(1),
+            _vm._v(" "),
+            _vm._l(_vm.user.groups, function(group) {
+              return _c("h6", [
+                _c("b", [_vm._v(" Naam: ")]),
+                _vm._v(_vm._s(group) + " ")
+              ])
+            })
+          ],
+          2
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.itemid,
+          expression: "itemid"
+        }
+      ],
+      staticClass: "form-control",
+      attrs: { type: "number", id: "itemid", name: "itemid" },
+      domProps: { value: _vm.itemid },
+      on: {
+        input: function($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.itemid = $event.target.value
+        }
+      }
+    }),
+    _vm._v(" "),
+    _c(
+      "button",
+      {
+        staticClass: "btn btn-dark",
+        attrs: { type: "button" },
+        on: {
+          click: function($event) {
+            return _vm.getItem()
+          }
+        }
+      },
+      [_vm._v("Get item")]
+    ),
+    _vm._v(" "),
     _c(
       "button",
       {
@@ -62711,6 +62805,12 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h4", [_c("b", [_vm._v(" Groepen: ")])])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement

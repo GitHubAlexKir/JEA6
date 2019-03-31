@@ -9,6 +9,7 @@ import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 import static javax.transaction.Transactional.TxType.REQUIRED;
@@ -23,14 +24,13 @@ public class ItemRepository {
 
    @Transactional(REQUIRED)
    public Item create(Item item) {
-       System.out.println(item.toString());
        em.persist(item);
-       item.setId(1);
+       em.detach(item);
        return item;
    }
 
    public List<Item> findAll() {
-       return em.createQuery("SELECT i FROM item i", Item.class)
+       return em.createQuery("SELECT i FROM Item i", Item.class)
                       .getResultList();
    }
 
@@ -38,4 +38,9 @@ public class ItemRepository {
        return em.find(Item.class, id);
    }
 
+    public boolean delete(long id) {
+       Item itemToRemove = em.find(Item.class,id);
+       em.remove(itemToRemove);
+       return true;
+    }
 }
