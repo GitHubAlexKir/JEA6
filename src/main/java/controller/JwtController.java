@@ -1,5 +1,6 @@
 package controller;
 
+import Interceptor.SimpleInterceptor;
 import Repository.UserRepository;
 import config.JwtTokenUtil;
 import domain.JsonResponse;
@@ -10,6 +11,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.interceptor.Interceptors;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -18,10 +20,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import java.util.Enumeration;
+
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 
 @Path("jwt")
 @Stateless
+@Interceptors(SimpleInterceptor.class)
 public class JwtController {
 
     private JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
@@ -73,15 +78,17 @@ public class JwtController {
         return Response.ok().header(AUTHORIZATION, "Bearer " + token).entity(json).build();
     }
 
-    @POST
+    @GET
     @Path("user")
-    public String getUser(@Context HttpServletRequest req)
+    public User getUser(@Context HttpServletRequest req)
     {
         String authorizationHeader = req.getHeader("Authorization");
-
         // Extract the token from the HTTP Authorization header
-       // String token = authorizationHeader.substring("Bearer".length()).trim();
-        return authorizationHeader;
+        String token = authorizationHeader.substring("Bearer".length()).trim();
+        User user = repo.find(jwtTokenUtil.getUsernameFromToken(token));
+        repo.detach(user);
+        user.setPassword(null);
+        return user;
     }
 
 }

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Login from './components/login.vue';
-import Home from './components/logout.vue';
+import login from './components/login.vue';
+import home from './components/home.vue';
 import BootstrapVue from 'bootstrap-vue';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
@@ -18,8 +18,8 @@ require('./bootstrap');
 window.Bus = new Vue();
 
 const routes = [
-    { path: '/', component: Login, name: 'login', meta: { guest: true }},
-    { path: '/home', component: Home, name: 'home', meta: { requiresAuth: true }},
+    { path: '/', component: login, name: 'login', meta: { guest: true }},
+    { path: '/home', component: home, name: 'home', meta: { requiresAuth: true }},
     ];
 
 
