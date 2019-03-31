@@ -12,11 +12,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
+import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
@@ -73,4 +72,16 @@ public class JwtController {
         json.setStatus("SUCCESS");
         return Response.ok().header(AUTHORIZATION, "Bearer " + token).entity(json).build();
     }
+
+    @POST
+    @Path("user")
+    public String getUser(@Context HttpServletRequest req)
+    {
+        String authorizationHeader = req.getHeader("Authorization");
+
+        // Extract the token from the HTTP Authorization header
+       // String token = authorizationHeader.substring("Bearer".length()).trim();
+        return authorizationHeader;
+    }
+
 }

@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import moment from 'moment';
 
+
 Vue.use(BootstrapVue);
 window.Vue = require('vue');
 window.Moment = moment;

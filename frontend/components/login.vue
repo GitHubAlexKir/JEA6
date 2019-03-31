@@ -36,6 +36,7 @@
 </template>
 
 <script>
+    import axios from '../axios';
     export default {
         data() {
             return {
@@ -48,7 +49,7 @@
         },
         methods: {
         loginSubmit(){
-            axios.post('/1/api/jwt/login', this.UserLogin).then(({data}) => {
+            axios.post('api/jwt/login', this.UserLogin).then(({data}) => {
                     localStorage.setItem('token', data.data);
                     console.log(data.data);
                     console.log(data);

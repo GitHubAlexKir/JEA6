@@ -1,4 +1,5 @@
 import io.restassured.RestAssured;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -13,15 +14,17 @@ public class AccountControllerTest {
         RestAssured.port = 8080;
     }
 
+    @Before
+
     @Test
-    public void testUserFetchesSuccess() {
-        get("/api/account/get/1")
-                .then()
-                .body("id", equalTo(1))
-                .body("age",equalTo(19))
-                .body("email", equalTo("a@h.nl"))
-                .body("name", equalTo("alex"))
-                .body("role", equalTo("Admin"))
-                .body("password", equalTo("2323465757685686"));
+        public void testUserFetchesSuccess() {
+            get("/api/account/get/1")
+                    .then()
+                    .body("id", equalTo(1))
+                    .body("age",equalTo(19))
+                    .body("email", equalTo("a@h.nl"))
+                    .body("name", equalTo("alex"))
+                    .body("role", equalTo("Admin"))
+                    .body("password", equalTo("2323465757685686"));
     }
 }
