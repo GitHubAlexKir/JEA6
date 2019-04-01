@@ -27,6 +27,7 @@
                                     </button>
                                 </div>
                             </form>
+                            <button type="button" class="btn btn-dark" @click="loginAuth0()">Oauth login</button>
                         </div>
                 </div>
             </div>
@@ -60,7 +61,9 @@
             }).catch(() => {
                 this.wrong = true;
             })
-        }
+        }, loginAuth0(){
+                this.$auth.login()
+            }
         }
     }
 </script>

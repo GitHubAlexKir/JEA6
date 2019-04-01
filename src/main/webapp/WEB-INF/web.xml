@@ -4,11 +4,9 @@
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
   <display-name>Authentication</display-name>
   <welcome-file-list>
-    <welcome-file>welcome.jsp</welcome-file>
     <welcome-file>index.html</welcome-file>
-    <welcome-file>index.htm</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
+
 
     <!--  login Config -->
   <login-config>
@@ -19,6 +17,19 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
       <form-error-page>/WEB-INF/login.jsp?auth-error=1</form-error-page>
     </form-login-config>
   </login-config>
+
+  <context-param>
+    <param-name>com.auth0.domain</param-name>
+    <param-value>jea6.auth0.com</param-value>
+  </context-param>
+  <context-param>
+    <param-name>com.auth0.clientId</param-name>
+    <param-value>3G2z0l1M54JT2vgv3CzHtrUZPV6nLs1f</param-value>
+  </context-param>
+  <context-param>
+    <param-name>com.auth0.clientSecret</param-name>
+    <param-value>qWNF2v8yEtZaBqZp3Ridcdx-2xxAPXtYkCq9Zfcdy0Gu1NGp3u6HrtqvwbuAUu52</param-value>
+  </context-param>
 
     <!--  error not authorized page -->
   <error-page>

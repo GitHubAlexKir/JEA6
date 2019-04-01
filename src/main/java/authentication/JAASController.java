@@ -1,4 +1,4 @@
-package controller;
+package authentication;
 
 import Repository.UserRepository;
 import domain.Group;
@@ -29,7 +29,7 @@ import javax.ws.rs.core.Response;
 @Path("/auth")
 @Produces(MediaType.TEXT_PLAIN)
 @Stateless
-public class AuthController {
+public class JAASController {
  
     @EJB
     private UserRepository userRepository;

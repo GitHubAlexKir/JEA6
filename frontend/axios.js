@@ -9,11 +9,11 @@ const instance = axios.create({
 
 instance.interceptors.request.use(function (config) {
     /* global window Store */
-    let token = localStorage.token;
+    let token = localStorage.getItem('access_token');
 
     // console.log(location.id, location)
     if (token) {
-        config.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('token');
+        config.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('access_token');
     }
 
     return config;

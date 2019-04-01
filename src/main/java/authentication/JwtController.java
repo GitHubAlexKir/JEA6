@@ -1,4 +1,4 @@
-package controller;
+package authentication;
 
 import Interceptor.SimpleInterceptor;
 import Repository.UserRepository;
@@ -51,7 +51,7 @@ public class JwtController {
         else {
             json.setStatus("FAILED");
             json.setErrorMsg("Authentication failed");
-            return Response.status(401).entity(json).build();
+            return Response.status(401).entity(json).header("Access-Control-Allow-Origin", "*").build();
         }
     }
 
@@ -80,7 +80,7 @@ public class JwtController {
 
     @GET
     @Path("user")
-    public User getUser(@Context HttpServletRequest req)
+    public Response getUser(@Context HttpServletRequest req)
     {
         String authorizationHeader = req.getHeader("Authorization");
         // Extract the token from the HTTP Authorization header
@@ -88,7 +88,7 @@ public class JwtController {
         User user = repo.find(jwtTokenUtil.getUsernameFromToken(token));
         repo.detach(user);
         user.setPassword(null);
-        return user;
+        return Response.ok().entity(user).build();
     }
 
 }
