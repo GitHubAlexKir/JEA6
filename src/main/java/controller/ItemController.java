@@ -2,6 +2,7 @@ package controller;
 
 import Interceptor.SimpleInterceptor;
 import Repository.ItemRepository;
+import domain.dto.ItemDTO;
 import domain.item.Item;
 import org.json.JSONObject;
 
@@ -27,6 +28,7 @@ public class ItemController {
 
     }
     @GET
+    @Path("/ping")
     public Response item()
     {
 
@@ -36,7 +38,7 @@ public class ItemController {
         return Response.ok(response.toString(2)).build();
     }
     @GET
-    @Path("/get/{id}")
+    @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getItem(@PathParam("id") long id)
     {
@@ -48,7 +50,6 @@ public class ItemController {
     }
 
     @GET
-    @Path("/get/all")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getItems()
     {
@@ -59,25 +60,27 @@ public class ItemController {
     }
 
     @POST
-    @Path("/save")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response save(Item item)
+    public Response save(ItemDTO itemDTO)
     {
         JSONObject response = new JSONObject();
-        response.put("item",repo.create(item).toMap());
+        System.out.println("INCOMMING iTEM%% " + itemDTO.toString());
+        Item item = new Item(itemDTO);
+        item = repo.create(item);
+        response.put("item",item.toMap());
         response.put("_links",getLinks(URI.create("http://localhost:8080/1/api/item")));
         return Response.ok(response.toString(2)).build();
     }
 
-    @POST
-    @Path("/delete")
+    @DELETE
+    @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response delete(Item item)
+    public Response delete(@PathParam("id") long id)
     {
         JSONObject response = new JSONObject();
-        response.put("Item deleted",repo.delete(item.getId()));
+        response.put("Item_id deleted",repo.delete(id));
         response.put("_links",getLinks(URI.create("http://localhost:8080/1/api/item")));
         return Response.ok(response.toString(2)).build();
     }

@@ -1,5 +1,7 @@
 package domain.item;
 
+import domain.dto.ItemDTO;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -22,6 +24,13 @@ public class Item implements Serializable {
 
     public Item() {
     }
+    public Item(ItemDTO itemDTO) {
+        this.price = itemDTO.getPrice();
+        this.productName = itemDTO.getProductName();
+        this.productNumber = itemDTO.getProductNumber();
+        this.stock = itemDTO.getStock();
+    }
+
 
     public long getId() {
         return id;

@@ -22,8 +22,7 @@ public class ItemRepository {
    @Transactional(REQUIRED)
    public Item create(Item item) {
        em.persist(item);
-       em.detach(item);
-       return item;
+       return findWithProductNumber(item.getProductNumber());
    }
 
    public List<Item> findAll() {
@@ -34,6 +33,11 @@ public class ItemRepository {
    public Item find(Long id) {
        return em.find(Item.class, id);
    }
+    public Item findWithProductNumber(Long productNumber) {
+        return em.createQuery("SELECT i FROM Item i where i.productNumber = :productNumber", Item.class)
+                .setParameter("productNumber", productNumber)
+                .getSingleResult();
+    }
 
     public boolean delete(long id) {
        Item itemToRemove = em.find(Item.class,id);
