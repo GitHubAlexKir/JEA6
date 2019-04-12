@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-    baseURL: 'http://localhost:8080/1/',
+    baseURL: 'http://localhost:8080/webshop/',
     timeout: 10000,
     params: {} // do not remove this, its added to add params later in the config
 });
@@ -9,11 +9,11 @@ const instance = axios.create({
 
 instance.interceptors.request.use(function (config) {
     /* global window Store */
-    let token = localStorage.getItem('access_token');
+    let token = localStorage.getItem('token');
 
     // console.log(location.id, location)
     if (token) {
-        config.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('access_token');
+        config.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('token');
     }
 
     return config;

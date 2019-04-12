@@ -1,7 +1,8 @@
-package domain;
+package domain.authentication;
 
 import domain.dto.UserDTO;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name="USERS")
 @Cacheable(false)
 public class User implements Serializable {
           
@@ -22,12 +22,6 @@ public class User implements Serializable {
       
     @Column(nullable=false, length=128)
     private String lastName;
-      
-    /**
-     * A sha512 is 512 bits long -- as its name indicates. If you are using an hexadecimal representation, 
-     * each digit codes for 4 bits ; so you need 512 : 4 = 128 digits to represent 512 bits -- so, you need a varchar(128), 
-     * or a char(128), as the length is always the same, not varying at all.
-     */
     @Column(nullable=false, length=128) //sha-512 + hex
     private String password;
       
@@ -35,13 +29,16 @@ public class User implements Serializable {
     @Column(nullable=false)
     private Date registeredOn;
           
-    @ElementCollection(targetClass = Group.class)
-    @CollectionTable(name = "USERS_GROUPS", 
+    @ElementCollection(targetClass = Privilege.class)
+    @CollectionTable(name = "User_Privilege",
                     joinColumns       = @JoinColumn(name = "email", nullable=false), 
-                    uniqueConstraints = { @UniqueConstraint(columnNames={"email","groupname"}) } )
+                    uniqueConstraints = { @UniqueConstraint(columnNames={"email","privilege_name"}) } )
     @Enumerated(EnumType.STRING)
-    @Column(name="groupname", length=64, nullable=false)
-    private List<Group> groups;
+    @Column(name="privilege_name", length=64, nullable=false)
+    private List<Privilege> privileges;
+
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private AddressInformation addressInformation;
      
     public User(){
          
@@ -58,6 +55,7 @@ public class User implements Serializable {
         this.lastName     = user.getLastName();
         this.password     = DigestUtils.sha512Hex(user.getPassword1() );
         this.registeredOn = new Date();
+        this.addressInformation = new AddressInformation(user.getAddressInformationDTO() );
     }
  
     public String getFirstName() {
@@ -83,10 +81,7 @@ public class User implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
-  
-    /**
-     * @return the password in SHA512 HEX representation
-     */
+
     public String getPassword() {
         return password;
     }
@@ -102,19 +97,33 @@ public class User implements Serializable {
     public void setRegisteredOn(Date registeredOn) {
         this.registeredOn = registeredOn;
     }
- 
-    public List<Group> getGroups() {
-        return groups;
+
+    public AddressInformation getAddressInformation() {
+        return addressInformation;
+    }
+
+    public void setAddressInformation(AddressInformation addressInformation) {
+        this.addressInformation = addressInformation;
+    }
+
+    public List<Privilege> getPrivileges() {
+        return privileges;
     }
  
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
+    public void setPrivileges(List<Privilege> privileges) {
+        this.privileges = privileges;
     }
- 
+
     @Override
     public String toString() {
-        return "User [email=" + email + ", firstName=" + firstName
-                + ", lastName=" + lastName + ", password=" + password
-                + ", registeredOn=" + registeredOn + ", groups=" + groups + "]";
+        return "User{" +
+                "email='" + email + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", password='" + password + '\'' +
+                ", registeredOn=" + registeredOn +
+                ", privileges=" + privileges.toString() +
+                ", addressInformation=" + addressInformation.toString() +
+                '}';
     }
 }

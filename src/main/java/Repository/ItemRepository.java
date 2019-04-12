@@ -1,15 +1,12 @@
 package Repository;
 
 import Interceptor.SimpleInterceptor;
-import domain.Item;
-import domain.Person;
-
+import domain.item.Item;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 import static javax.transaction.Transactional.TxType.REQUIRED;

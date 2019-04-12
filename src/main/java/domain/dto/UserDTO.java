@@ -1,5 +1,7 @@
 package domain.dto;
 
+import domain.authentication.AddressInformation;
+
 public class UserDTO {
  
     private String email;
@@ -7,6 +9,10 @@ public class UserDTO {
     private String lastName;
     private String password1;
     private String password2;
+    private AddressInformationDTO addressInformationDTO;
+
+    public UserDTO() {
+    }
 
     public String getFirstName() {
         return firstName;
@@ -47,11 +53,24 @@ public class UserDTO {
     public void setPassword2(String password) {
         this.password2 = password;
     }
-      
+
+    public AddressInformationDTO getAddressInformationDTO() {
+        return addressInformationDTO;
+    }
+
+    public void setAddressInformationDTO(AddressInformationDTO addressInformationDTO) {
+        this.addressInformationDTO = addressInformationDTO;
+    }
+
     @Override
     public String toString() {
-        return "User [email=" + email + ", fName=" + firstName
-                + ", lName=" + lastName + ", password1=" + password1 +", password2=" + password2 + "]";
+        return "UserDTO{" +
+                "email='" + email + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", password1='" + password1 + '\'' +
+                ", password2='" + password2 + '\'' +
+                ", addressInformationDTO=" + addressInformationDTO.toString() +
+                '}';
     }
-     
 }

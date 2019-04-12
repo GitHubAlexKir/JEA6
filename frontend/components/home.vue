@@ -1,35 +1,36 @@
 <template>
     <div>
-    <nav class="navbar navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">
-            <img src="../img/logo.png" width="40" height="40">
-        </a>
-        <div>
-            <img :src="$auth.user.picture" width="30" height="30">
-            <span class="text-muted font-weight-light px-2">{{$auth.user.name}}</span>
-            <button type="button" class="btn btn-outline-secondary btn-sm" @click="$auth.logout()">Logout</button>
+        <div v-if="user.email" class="col-md-6">
+            <h4>
+                <b> E-mail: </b>{{ user.email }}
+            </h4>
+            <h4>
+                <b> Voornaam: </b>{{ user.firstName }}
+            </h4>
+            <h4>
+                <b> Achternaam: </b>{{ user.lastName }}
+            </h4>
+            <h4><b> privileges: </b></h4>
+            <h6 v-for="privilege in user.privileges"><b> soort: </b>{{ privilege }} </h6>
         </div>
-    </nav>
-    <div class="jumbotron">
-        <div class="container">
-            <h1 class="display-4">Hallo, {{$auth.user.name}}!</h1>
-            <p class="lead">Welkom bij AlcoholGigant</p>
+        <div v-if="user.addressInformation" class="col-md-6">
+            <h4>
+                <b> Verzending informatie </b>
+            </h4>
+            <h6>
+                <b> Ontvanger: </b>{{ user.addressInformation.addressee }}
+            </h6>
+            <h6>
+                <b> Adres: </b>{{ user.addressInformation.address }}
+            </h6>
+            <h6>
+                <b> Postcode: </b>{{ user.addressInformation.zip }}
+            </h6>
+            <h6>
+                <b> Plaats: </b>{{ user.addressInformation.city }}
+            </h6>
+
         </div>
-    </div>
-    <div>
-    <div v-if="user.email !== null" class="col-md-6">
-        <h4>
-            <b> E-mail: </b>{{ user.email }}
-        </h4>
-        <h4>
-            <b> Voornaam: </b>{{ user.firstName }}
-        </h4>
-        <h4>
-            <b> Achternaam: </b>{{ user.lastName }}
-        </h4>
-        <h4><b> Groepen: </b></h4>
-          <h6 v-for="group in user.groups"><b> Naam: </b>{{ group }} </h6>
-    </div>
         <div v-if="item.id !== null" class="col-md-6">
             <h4>
                 <b> id: </b>{{ item.id }}
@@ -42,7 +43,7 @@
             </h4></div>
         <input type="number" v-model="itemid" id="itemid" class="form-control" name="itemid">
         <button type="button" class="btn btn-dark" @click="getItem()">Get item</button>
-    </div>
+        <button type="button" class="btn btn-dark" @click="logout()">Uitloggen</button>
     </div>
 </template>
 
@@ -54,9 +55,7 @@
             return {
                 user:{},
                 itemid: 2,
-                item:{},
-                profle:{},
-                isAuthenticated: false
+                item:{}
             }
         },
         created() {
@@ -65,6 +64,10 @@
             });
         },
         methods: {
+            logout() {
+                localStorage.clear();
+                window.location = '/1/';
+            },
             getItem()
             {
                 axios.get('api/item/get/' + this.itemid).then(({data}) => {

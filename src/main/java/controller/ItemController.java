@@ -2,7 +2,7 @@ package controller;
 
 import Interceptor.SimpleInterceptor;
 import Repository.ItemRepository;
-import domain.Item;
+import domain.item.Item;
 import org.json.JSONObject;
 
 import javax.ejb.EJB;

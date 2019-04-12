@@ -1,5 +1,5 @@
 package Repository;
-import domain.User;
+import domain.authentication.User;
 
 import java.util.List;
 import javax.ejb.Stateless;

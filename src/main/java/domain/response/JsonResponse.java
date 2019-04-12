@@ -1,7 +1,6 @@
-package domain;
+package domain.response;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.Map;
 
 public class JsonResponse implements Serializable {
@@ -20,7 +19,6 @@ public class JsonResponse implements Serializable {
         this.status = status;
     }
 
-    //@XmlElement //we don't need this thanks to Jackson
     public float getVersion() {
         return JsonResponse.version;
     }

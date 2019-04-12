@@ -1,9 +1,9 @@
 package config;
 
 
-import domain.Group;
-import domain.User;
-import domain.UserLogin;
+import domain.authentication.Privilege;
+import domain.authentication.User;
+import domain.authentication.UserLogin;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -45,13 +45,13 @@ public class JwtTokenUtil implements Serializable {
     }
 
     public String generateToken(User user) {
-        return doGenerateToken(user.getEmail(),user.getGroups());
+        return doGenerateToken(user.getEmail(),user.getPrivileges());
     }
 
-    private String doGenerateToken(String subject, List<Group> groups) {
+    private String doGenerateToken(String subject, List<Privilege> privileges) {
 
         Claims claims = Jwts.claims().setSubject(subject);
-        claims.put("scopes", Arrays.asList(groups));
+        claims.put("scopes", Arrays.asList(privileges));
 
         return Jwts.builder()
                 .setClaims(claims)

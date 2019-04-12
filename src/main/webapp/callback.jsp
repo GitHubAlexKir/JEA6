@@ -20,10 +20,10 @@
     </b-row>
     <b-row>
         <b-col>
-            <router-view/>
+            <callback></callback>
         </b-col>
     </b-row>
 </b-container>
-<script src="public/js/app.js"></script>
+<script src="/public/js/app.js"></script>
 </body>
 </html>
