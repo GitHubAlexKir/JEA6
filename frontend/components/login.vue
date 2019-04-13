@@ -27,11 +27,11 @@
                                                     </button>
                                                 </div>
                                             </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div  class="login-form">
                                 <div class="row justify-content-center">
                                     <div class="col-md-8">
@@ -40,18 +40,19 @@
                                             <div class="card-body">
                                             <form @submit.prevent="registerSubmit()">
                                                 <div class="form-group row">
-                                                    <label for="email" class="col-md-4 col-form-label text-md-right">E-Mail Address</label>
+                                                    <label for="email" class="col-md-4 col-form-label text-md-right">E-Mail</label>
                                                     <div class="col-md-6">
                                                         <input type="text" v-model="UserRegister.email" id="registerEmail" class="form-control" name="email" required>
                                                     </div>
                                                 </div>
-
                                                 <div class="form-group row">
-                                                    <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
+                                                    <label for="password" class="col-md-4 col-form-label text-md-right">Wachtwoord</label>
                                                     <div class="col-md-4">
                                                         <input type="password" id="password1" class="form-control" v-model="UserRegister.password1" name="password1" required>
                                                     </div>
-                                                    <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="password" class="col-md-4 col-form-label text-md-right">Herhaal wachtwoord</label>
                                                     <div class="col-md-4">
                                                         <input type="password" id="password2" class="form-control" v-model="UserRegister.password2" name="password2" required>
                                                     </div>
@@ -61,6 +62,8 @@
                                                     <div class="col-md-4">
                                                         <input type="text" id="firstName" class="form-control" v-model="UserRegister.firstName" name="firstName" required>
                                                     </div>
+                                                </div>
+                                                <div class="form-group row">
                                                     <label for="lastName" class="col-md-4 col-form-label text-md-right">Achternaam</label>
                                                     <div class="col-md-4">
                                                         <input type="text" id="lastName" class="form-control" v-model="UserRegister.lastName" name="lastName" required>
@@ -84,6 +87,8 @@
                                                     <div class="col-md-2">
                                                         <input type="text" v-model="UserRegister.addressInformationDTO.zip" id="zip" class="form-control" name="zip" required>
                                                     </div>
+                                                </div>
+                                                <div class="form-group row">
                                                     <label for="city" class="col-md-4 col-form-label text-md-right">Plaats</label>
                                                     <div class="col-md-4">
                                                         <input type="text" v-model="UserRegister.addressInformationDTO.city" id="city" class="form-control" name="city" required>

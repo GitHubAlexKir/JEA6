@@ -45,7 +45,7 @@ public class ItemController {
         JSONObject response = new JSONObject();
         Item item = repo.find(id);
         response.put("item",item.toMap());
-        response.put("_links",getLinks(URI.create("http://localhost:8080/1/api/item")));
+        response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/item/" + item.getId())));
         return Response.ok(response.toString(2)).build();
     }
 
@@ -55,7 +55,7 @@ public class ItemController {
     {
         JSONObject response = new JSONObject();
         response.put("items",repo.findAll());
-        response.put("_links",getLinks(URI.create("http://localhost:8080/1/api/item")));
+        response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/item")));
         return Response.ok(response.toString(2)).build();
     }
 
@@ -65,11 +65,10 @@ public class ItemController {
     public Response save(ItemDTO itemDTO)
     {
         JSONObject response = new JSONObject();
-        System.out.println("INCOMMING iTEM%% " + itemDTO.toString());
         Item item = new Item(itemDTO);
         item = repo.create(item);
         response.put("item",item.toMap());
-        response.put("_links",getLinks(URI.create("http://localhost:8080/1/api/item")));
+        response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/item")));
         return Response.ok(response.toString(2)).build();
     }
 
@@ -81,18 +80,19 @@ public class ItemController {
     {
         JSONObject response = new JSONObject();
         response.put("Item_id deleted",repo.delete(id));
-        response.put("_links",getLinks(URI.create("http://localhost:8080/1/api/item")));
+        response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/item/" + id)));
         return Response.ok(response.toString(2)).build();
     }
 
     private Map<String, URI> getLinks(URI self)
     {
         Map<String, URI> links = new HashMap<>();
+        String baseUri = "http://localhost:8080/webshop";
         links.put("self",self);
-        links.put("save",URI.create("http://localhost:8080/1/api/item/save"));
-        links.put("delete",URI.create("http://localhost:8080/1/api/item/delete"));
-        links.put("get",URI.create("http://localhost:8080/1/api/item/get/item-id"));
-        links.put("get all",URI.create("http://localhost:8080/1/api/item/get/all"));
+        links.put("save",URI.create(baseUri +"/api/item"));
+        links.put("delete",URI.create(baseUri + "/api/item"));
+        links.put("get",URI.create(baseUri + "/api/item/item-id"));
+        links.put("get all",URI.create(baseUri + "/api/item"));
         return links;
     }
 }

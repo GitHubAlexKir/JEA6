@@ -15,22 +15,34 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Category one <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">Category two</a></li>
-            </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"> <span class="glyphicon glyphicon-shopping-cart"></span> {{ cart.length }} - Items<span class="caret"></span></a>
                     <ul class="dropdown-menu dropdown-cart" role="menu">
+                        <button @click="toggleCartDisplay()">Toon {{cartDisplaySettings}} details</button>
+                        <!-- show less items -->
+                        <div v-if="showLess">
                             <div v-for="(item, index) in cart">
+                                <li>
+                                <span class="item">
+                                   <span class="item-left">
+                                       <span class="item-info">
+                                           <span>{{item.productName}} ${{item.price}} <button @click="removeFromCart(index)" class="btn btn-xs btn-danger pull-right">x</button></span>
+                                       </span>
+                                   </span>
+                                </span>
+                                </li>
+                            </div>
+                        </div>
+                        <div v-else>
+                        <div v-for="(item, index) in cart">
                             <li>
                                 <span class="item">
                                    <span class="item-left">
                                        <img src="http://lorempixel.com/50/50/" alt="" />
                                        <span class="item-info">
                                            <span>{{item.productName}}</span>
-                                           <span>{{item.price}}$</span>
+                                           <span>${{item.price}}</span>
                                        </span>
                                    </span>
                                    <span class="item-right">
@@ -39,8 +51,13 @@
                                 </span>
                             </li>
                             </div>
+                        </div>
                         <li class="divider"></li>
-                        <li><a class="text-center" href="">View Cart</a></li>
+                        <li><a class="text-center">Totaal: ${{ cartTotal }}</a></li>
+                        <li class="divider"></li>
+                        <li><a class="text-center" href="">Bestellen en betalen</a></li>
+                        <li class="divider"></li>
+                        <li><a class="text-center" @click="clearCart()"><font color="red"> Winkelwagen legen</font></a></li>
                     </ul>
                 </li>
             </ul>
@@ -54,7 +71,17 @@
         name: 'navbar',
         data() {
             return {
-                cart:[]
+                cart:[],
+                cartTotal: 0,
+                showLess: false,
+                cartDisplaySettings: 'minder'
+            }
+        },
+        created() {
+            let cart = localStorage.getItem('cart');
+            if (cart) {
+                this.cart = JSON.parse(localStorage.getItem('cart'));
+                this.setTotalPrice();
             }
         },
         methods: {
@@ -62,11 +89,55 @@
                 localStorage.clear();
                 location.reload();
             },
+            toggleCartDisplay(){
+                if (this.showLess){
+                    this.cartDisplaySettings = 'minder';
+                    this.showLess = false;
+                }else {
+                    this.cartDisplaySettings = 'meer';
+                    this.showLess = true;
+                }
+            },
             addToCart(item){
                 this.cart.push(item);
+                this.saveCartToLocalStorage();
             },
             removeFromCart(index){
-                this.$delete(this.cart,index)
+                this.$delete(this.cart,index);
+                this.saveCartToLocalStorage();
+            },
+            clearCart(){
+                this.$swal.fire({
+                    title: 'Weet je dit zeker?',
+                    text: "Je kunt dit niet terugdraaien!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ja, leeg winkelwagen.'
+                }).then((result) => {
+                    if (result.value) {
+                        this.cart = [];
+                        this.setTotalPrice();
+                        this.saveCartToLocalStorage();
+                        this.$swal.fire(
+                            'Geleegd!',
+                            'Jouw winkelwagen is geleegd.',
+                            'success'
+                        )
+                    }
+                });
+            },
+            saveCartToLocalStorage(){
+                localStorage.setItem('cart', JSON.stringify(this.cart));
+                this.setTotalPrice();
+            },
+            setTotalPrice(){
+                var total = 0;
+                this.cart.forEach(e => {
+                    total += e.price;
+                });
+                this.cartTotal = total.toFixed(2);
             }
         }
     }
