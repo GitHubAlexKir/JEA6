@@ -19,7 +19,8 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"> <span class="glyphicon glyphicon-shopping-cart"></span> {{ cart.length }} - Items<span class="caret"></span></a>
                     <ul class="dropdown-menu dropdown-cart" role="menu">
-                        <button @click="toggleCartDisplay()">Toon {{cartDisplaySettings}} details</button>
+                        <li><a class="text-center" @click="toggleCartDisplay()">Toon {{cartDisplaySettings}} details</a></li>
+                        <li class="divider"></li>
                         <!-- show less items -->
                         <div v-if="showLess">
                             <div v-for="(item, index) in cart">
@@ -55,7 +56,7 @@
                         <li class="divider"></li>
                         <li><a class="text-center">Totaal: ${{ cartTotal }}</a></li>
                         <li class="divider"></li>
-                        <li><a class="text-center" href="">Bestellen en betalen</a></li>
+                        <li><a class="text-center" @click="createOrder()">Bestellen en betalen</a></li>
                         <li class="divider"></li>
                         <li><a class="text-center" @click="clearCart()"><font color="red"> Winkelwagen legen</font></a></li>
                     </ul>
@@ -67,10 +68,17 @@
     </div>
 </template>
 <script>
+    import axios from '../axios';
     export default {
         name: 'navbar',
         data() {
             return {
+                order:{
+                    items: '',
+                    userEmail: '',
+                    dispatched: '0',
+                    addressInformationDTO: {}
+                },
                 cart:[],
                 cartTotal: 0,
                 showLess: false,
@@ -83,6 +91,10 @@
                 this.cart = JSON.parse(localStorage.getItem('cart'));
                 this.setTotalPrice();
             }
+            axios.get('api/jwt/user').then(({data}) => {
+                this.order.userEmail = data.email;
+                this.order.addressInformationDTO = data.addressInformation;
+            });
         },
         methods: {
             logout() {
@@ -138,7 +150,25 @@
                     total += e.price;
                 });
                 this.cartTotal = total.toFixed(2);
-            }
+            },
+            createOrder(){
+                this.order.items = this.cart;
+                console.log(this.order);
+                axios.post('api/order', this.order).then(({data}) => {
+                    this.cart = [];
+                    this.saveCartToLocalStorage();
+                    this.$swal.fire({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Bestelling is aangemaakt',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+
+                }).catch((e) => {
+                    console.log('ERROR' + e);
+                })
+            },
         }
     }
 </script>

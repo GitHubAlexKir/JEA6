@@ -1,6 +1,7 @@
 package domain.authentication;
 
 import domain.dto.AddressInformationDTO;
+import org.json.JSONObject;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -24,6 +25,11 @@ public class AddressInformation implements Serializable {
     }
 
     public AddressInformation(AddressInformationDTO addressInformationDTO) {
+        try{
+            this.id = addressInformationDTO.getId();
+        }catch (NullPointerException e){
+            //new AddressInformation
+        }
         this.addressee = addressInformationDTO.getAddressee();
         this.address = addressInformationDTO.getAddress();
         this.zip = addressInformationDTO.getZip();
@@ -79,5 +85,15 @@ public class AddressInformation implements Serializable {
                 ", zip='" + zip + '\'' +
                 ", city='" + city + '\'' +
                 '}';
+    }
+
+    public JSONObject toMap() {
+        JSONObject response = new JSONObject();
+        response.put("id", this.id);
+        response.put("addressee",this.addressee);
+        response.put("address",this.address);
+        response.put("zip",this.zip);
+        response.put("city",this.city);
+        return response;
     }
 }

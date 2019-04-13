@@ -119,7 +119,7 @@
                 axios.get('api/item/get/' + this.itemid).then(({data}) => {
                     this.item = data.item;
                 });
-            }
+            },
         }
     }
 </script>

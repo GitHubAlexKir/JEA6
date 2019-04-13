@@ -25,6 +25,11 @@ public class Item implements Serializable {
     public Item() {
     }
     public Item(ItemDTO itemDTO) {
+        try {
+            this.id = itemDTO.getId();
+        }catch (NullPointerException e){
+            //New item, dont set id
+        }
         this.price = itemDTO.getPrice();
         this.productName = itemDTO.getProductName();
         this.productNumber = itemDTO.getProductNumber();

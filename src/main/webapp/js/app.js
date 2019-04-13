@@ -2491,6 +2491,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../axios */ "./frontend/axios.js");
 //
 //
 //
@@ -2559,10 +2560,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'navbar',
   data: function data() {
     return {
+      order: {
+        items: '',
+        userEmail: '',
+        dispatched: '0',
+        addressInformationDTO: {}
+      },
       cart: [],
       cartTotal: 0,
       showLess: false,
@@ -2570,12 +2579,20 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   created: function created() {
+    var _this = this;
+
     var cart = localStorage.getItem('cart');
 
     if (cart) {
       this.cart = JSON.parse(localStorage.getItem('cart'));
       this.setTotalPrice();
     }
+
+    _axios__WEBPACK_IMPORTED_MODULE_0__["default"].get('api/jwt/user').then(function (_ref) {
+      var data = _ref.data;
+      _this.order.userEmail = data.email;
+      _this.order.addressInformationDTO = data.addressInformation;
+    });
   },
   methods: {
     logout: function logout() {
@@ -2600,7 +2617,7 @@ __webpack_require__.r(__webpack_exports__);
       this.saveCartToLocalStorage();
     },
     clearCart: function clearCart() {
-      var _this = this;
+      var _this2 = this;
 
       this.$swal.fire({
         title: 'Weet je dit zeker?',
@@ -2612,13 +2629,13 @@ __webpack_require__.r(__webpack_exports__);
         confirmButtonText: 'Ja, leeg winkelwagen.'
       }).then(function (result) {
         if (result.value) {
-          _this.cart = [];
+          _this2.cart = [];
 
-          _this.setTotalPrice();
+          _this2.setTotalPrice();
 
-          _this.saveCartToLocalStorage();
+          _this2.saveCartToLocalStorage();
 
-          _this.$swal.fire('Geleegd!', 'Jouw winkelwagen is geleegd.', 'success');
+          _this2.$swal.fire('Geleegd!', 'Jouw winkelwagen is geleegd.', 'success');
         }
       });
     },
@@ -2632,6 +2649,28 @@ __webpack_require__.r(__webpack_exports__);
         total += e.price;
       });
       this.cartTotal = total.toFixed(2);
+    },
+    createOrder: function createOrder() {
+      var _this3 = this;
+
+      this.order.items = this.cart;
+      console.log(this.order);
+      _axios__WEBPACK_IMPORTED_MODULE_0__["default"].post('api/order', this.order).then(function (_ref2) {
+        var data = _ref2.data;
+        _this3.cart = [];
+
+        _this3.saveCartToLocalStorage();
+
+        _this3.$swal.fire({
+          position: 'top-end',
+          type: 'success',
+          title: 'Bestelling is aangemaakt',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      })["catch"](function (e) {
+        console.log('ERROR' + e);
+      });
     }
   }
 });
@@ -22467,21 +22506,28 @@ var render = function() {
                     attrs: { role: "menu" }
                   },
                   [
-                    _c(
-                      "button",
-                      {
-                        on: {
-                          click: function($event) {
-                            return _vm.toggleCartDisplay()
+                    _c("li", [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "text-center",
+                          on: {
+                            click: function($event) {
+                              return _vm.toggleCartDisplay()
+                            }
                           }
-                        }
-                      },
-                      [
-                        _vm._v(
-                          "Toon " + _vm._s(_vm.cartDisplaySettings) + " details"
-                        )
-                      ]
-                    ),
+                        },
+                        [
+                          _vm._v(
+                            "Toon " +
+                              _vm._s(_vm.cartDisplaySettings) +
+                              " details"
+                          )
+                        ]
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("li", { staticClass: "divider" }),
                     _vm._v(" "),
                     _vm.showLess
                       ? _c(
@@ -22578,7 +22624,20 @@ var render = function() {
                     _vm._v(" "),
                     _c("li", { staticClass: "divider" }),
                     _vm._v(" "),
-                    _vm._m(1),
+                    _c("li", [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "text-center",
+                          on: {
+                            click: function($event) {
+                              return _vm.createOrder()
+                            }
+                          }
+                        },
+                        [_vm._v("Bestellen en betalen")]
+                      )
+                    ]),
                     _vm._v(" "),
                     _c("li", { staticClass: "divider" }),
                     _vm._v(" "),
@@ -22640,16 +22699,6 @@ var staticRenderFns = [
       _vm._v(" "),
       _c("a", { staticClass: "navbar-brand", attrs: { href: "#" } }, [
         _vm._v("AlcoholGigant")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("li", [
-      _c("a", { staticClass: "text-center", attrs: { href: "" } }, [
-        _vm._v("Bestellen en betalen")
       ])
     ])
   }
