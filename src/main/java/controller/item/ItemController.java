@@ -4,6 +4,8 @@ import Interceptor.SimpleInterceptor;
 import Repository.ItemRepository;
 import domain.dto.ItemDTO;
 import domain.item.Item;
+import filter.JWTTokenNeeded;
+import filter.OwnerRoleNeeded;
 import org.json.JSONObject;
 
 import javax.ejb.EJB;
@@ -19,6 +21,7 @@ import java.util.Map;
 @Path("/item")
 @Stateless
 @Interceptors(SimpleInterceptor.class)
+@JWTTokenNeeded
 public class ItemController {
     @EJB
     ItemRepository repo;
@@ -62,6 +65,7 @@ public class ItemController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @OwnerRoleNeeded
     public Response save(ItemDTO itemDTO)
     {
         JSONObject response = new JSONObject();

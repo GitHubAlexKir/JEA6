@@ -6,6 +6,7 @@ import config.JwtTokenUtil;
 import domain.authentication.User;
 import domain.dto.OrderDTO;
 import domain.order.Order;
+import filter.JWTTokenNeeded;
 import org.json.JSONObject;
 
 import javax.ejb.EJB;
@@ -26,6 +27,7 @@ import java.util.Map;
 @Path("/order")
 @Stateless
 @Interceptors(SimpleInterceptor.class)
+@JWTTokenNeeded
 public class OrderController {
     @EJB
     OrderRepository repo;

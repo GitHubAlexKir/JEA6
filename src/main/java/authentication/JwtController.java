@@ -8,6 +8,7 @@ import domain.dto.UserDTO;
 import domain.response.JsonResponse;
 import domain.authentication.User;
 import domain.authentication.UserLogin;
+import filter.OwnerRoleNeeded;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.ejb.EJB;
@@ -16,6 +17,7 @@ import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import java.util.ArrayList;
@@ -60,6 +62,17 @@ public class JwtController {
             return Response.status(401).entity(json).build();
         }
 
+    }
+    @DELETE
+    @Path("/{email}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @OwnerRoleNeeded
+    public Response delete(@PathParam("email") String email)
+    {
+        User userToDelete = repo.find(email);
+        repo.remove(userToDelete);
+        return Response.ok().entity(true).build();
     }
     @POST
     @Path("/register")

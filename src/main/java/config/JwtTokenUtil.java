@@ -1,20 +1,21 @@
 package config;
 
 
+import Interceptor.SimpleInterceptor;
 import domain.authentication.Privilege;
 import domain.authentication.User;
-import domain.authentication.UserLogin;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+import javax.interceptor.Interceptors;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 
-
+@Interceptors(SimpleInterceptor.class)
 public class JwtTokenUtil implements Serializable {
     public static final long ACCESS_TOKEN_VALIDITY_SECONDS = 5*60*60;
     public static final String SIGNING_KEY = "Alex";
@@ -31,12 +32,19 @@ public class JwtTokenUtil implements Serializable {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
-
-    private Claims getAllClaimsFromToken(String token) {
+    public Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
                 .setSigningKey(SIGNING_KEY)
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public boolean containsScopeInToken(String token) {
+        System.out.println(getAllClaimsFromToken(token).get("scopes"));
+        String scope = getAllClaimsFromToken(token).get("scopes").toString();
+        System.out.println("DECODED SCOPES " + scope);
+        return scope.contains("Owner");
+
     }
 
     private Boolean isTokenExpired(String token) {
@@ -62,10 +70,10 @@ public class JwtTokenUtil implements Serializable {
                 .compact();
     }
 
-    public Boolean validateToken(String token, UserLogin userDetails) {
+    public Boolean validateToken(String token) {
         final String username = getUsernameFromToken(token);
         return (
-              username.equals(userDetails.getEmail())
+                username != null
                     && !isTokenExpired(token));
     }
 
