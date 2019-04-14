@@ -70,7 +70,19 @@ public class ItemController {
     {
         JSONObject response = new JSONObject();
         Item item = new Item(itemDTO);
-        item = repo.create(item);
+        item = repo.save(item);
+        response.put("item",item.toMap());
+        response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/item")));
+        return Response.ok(response.toString(2)).build();
+    }
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @OwnerRoleNeeded
+    public Response update(Item item)
+    {
+        JSONObject response = new JSONObject();
+        item = repo.update(item);
         response.put("item",item.toMap());
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/item")));
         return Response.ok(response.toString(2)).build();

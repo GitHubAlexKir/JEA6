@@ -20,7 +20,7 @@ public class ItemRepository {
    private EntityManager em;
 
    @Transactional(REQUIRED)
-   public Item create(Item item) {
+   public Item save(Item item) {
        em.persist(item);
        return findWithProductNumber(item.getProductNumber());
    }
@@ -43,5 +43,18 @@ public class ItemRepository {
        Item itemToRemove = em.find(Item.class,id);
        em.remove(itemToRemove);
        return true;
+    }
+
+    public Item update(Item item) {
+       em.merge(item);
+       em.flush();
+       return item;
+    }
+    public void removeFromStock(List<Item> items) {
+        for (Item i:items) {
+            Item item = find(i.getId());
+            item.setStock(item.getStock() - 1);
+            update(item);
+        }
     }
 }

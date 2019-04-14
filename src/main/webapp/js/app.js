@@ -2332,6 +2332,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2362,6 +2369,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     addToCart: function addToCart(item) {
+      item.stock--;
       this.$refs.navbar.addToCart(item);
       this.$swal.fire('Toegevoegd!', item.productName + ' toegevoegd aan winkelwagen', 'success');
     },
@@ -21929,11 +21937,7 @@ var render = function() {
                 _vm._l(_vm.items, function(item) {
                   return _c("div", { staticClass: "col-sm-6 col-md-4" }, [
                     _c("div", { staticClass: "thumbnail" }, [
-                      _c("h4", { staticClass: "text-center" }, [
-                        _c("span", { staticClass: "label label-info" }, [
-                          _vm._v(_vm._s(item.productName))
-                        ])
-                      ]),
+                      _vm._m(4, true),
                       _vm._v(" "),
                       _c("img", {
                         staticClass: "img-responsive",
@@ -21952,6 +21956,7 @@ var render = function() {
                             [
                               _c("h3", [
                                 _c("label", [
+                                  _vm._v("Prijs: "),
                                   _c("span", [_vm._v("€")]),
                                   _vm._v(_vm._s(item.price))
                                 ])
@@ -21960,29 +21965,55 @@ var render = function() {
                           )
                         ]),
                         _vm._v(" "),
-                        _c("p", [_vm._v(_vm._s(item.productNumber))]),
+                        _c("p", [
+                          _vm._v("Productnummer: " + _vm._s(item.productNumber))
+                        ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "row" }, [
-                          _c("div", { staticClass: "col-md-6" }, [
-                            _c(
-                              "a",
-                              {
-                                staticClass: "btn btn-success btn-product",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.addToCart(item)
-                                  }
-                                }
-                              },
-                              [
-                                _c("span", {
-                                  staticClass:
-                                    "glyphicon glyphicon-shopping-cart"
-                                }),
-                                _vm._v(" Koop")
-                              ]
-                            )
-                          ])
+                          item.stock > 0
+                            ? _c("div", { staticClass: "col-md-6" }, [
+                                _c("p", { staticClass: "text-center" }, [
+                                  _c(
+                                    "span",
+                                    { staticClass: "label label-info" },
+                                    [_vm._v("Voorraad: " + _vm._s(item.stock))]
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c(
+                                  "a",
+                                  {
+                                    staticClass: "btn btn-success btn-product",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.addToCart(item)
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _c("span", {
+                                      staticClass:
+                                        "glyphicon glyphicon-shopping-cart"
+                                    }),
+                                    _vm._v(" Koop")
+                                  ]
+                                )
+                              ])
+                            : _c("div", { staticClass: "col-md-6" }, [
+                                _c("p", { staticClass: "text-center" }, [
+                                  _c(
+                                    "span",
+                                    { staticClass: "label label-danger" },
+                                    [_vm._v("Voorraad: " + _vm._s(item.stock))]
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _vm._m(5, true),
+                                _vm._v(" "),
+                                _c("p", { staticClass: "text-center" }, [
+                                  _vm._v("Volgende levering is 23 Juni 2019")
+                                ])
+                              ])
                         ]),
                         _vm._v(" "),
                         _c("p")
@@ -22045,6 +22076,25 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("h4", [_c("b", [_vm._v(" Verzending informatie ")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h4", { staticClass: "text-center" }, [
+      _c("span", { staticClass: "label label-warning" }, [
+        _vm._v("< 18 jaar verkopen wij geen alcohol")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", { staticClass: "label-warning" }, [
+      _c("span", { staticClass: "glyphicon glyphicon-shopping-cart" }),
+      _vm._v(" Niet leverbaar")
+    ])
   }
 ]
 render._withStripped = true

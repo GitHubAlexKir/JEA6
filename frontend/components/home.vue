@@ -50,7 +50,7 @@
                     <div class="col-md-12">
                         <div v-for="item in items" class="col-sm-6 col-md-4">
                             <div class="thumbnail">
-                                <h4 class="text-center"><span class="label label-info">{{item.productName}}</span></h4>
+                                <h4 class="text-center"><span class="label label-warning">< 18 jaar verkopen wij geen alcohol</span></h4>
                                 <img src="http://lorempixel.com/650/450" class="img-responsive">
                                 <div class="caption">
                                     <div class="row">
@@ -59,13 +59,20 @@
                                         </div>
                                         <div class="col-md-6 col-xs-6 price">
                                             <h3>
-                                                <label><span>&#8364;</span>{{item.price}}</label></h3>
+                                                <label>Prijs: <span>&#8364;</span>{{item.price}}</label></h3>
                                         </div>
                                     </div>
-                                    <p>{{item.productNumber}}</p>
+                                    <p>Productnummer: {{item.productNumber}}</p>
                                     <div class="row">
-                                        <div class="col-md-6">
-                                            <a @click="addToCart(item)" class="btn btn-success btn-product"><span class="glyphicon glyphicon-shopping-cart"></span> Koop</a></div>
+                                        <div v-if="item.stock > 0" class="col-md-6">
+                                            <p class="text-center"><span class="label label-info">Voorraad: {{item.stock}}</span></p>
+                                            <a @click="addToCart(item)" class="btn btn-success btn-product"><span class="glyphicon glyphicon-shopping-cart"></span> Koop</a>
+                                        </div>
+                                        <div v-else class="col-md-6">
+                                            <p class="text-center"><span class="label label-danger">Voorraad: {{item.stock}}</span></p>
+                                            <p class="label-warning"><span class="glyphicon glyphicon-shopping-cart"></span> Niet leverbaar</p>
+                                            <p class="text-center">Volgende levering is 23 Juni 2019</p>
+                                        </div>
                                     </div>
                                     <p> </p>
                                 </div>
@@ -103,12 +110,13 @@
         },
         methods: {
             addToCart(item){
-                this.$refs.navbar.addToCart(item);
-                this.$swal.fire(
-                    'Toegevoegd!',
-                    item.productName + ' toegevoegd aan winkelwagen',
-                    'success'
-                )
+                item.stock--;
+                    this.$refs.navbar.addToCart(item);
+                    this.$swal.fire(
+                        'Toegevoegd!',
+                        item.productName + ' toegevoegd aan winkelwagen',
+                        'success'
+                    );
             },
             getItem()
             {
