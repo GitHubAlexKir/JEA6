@@ -16,10 +16,15 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
+                <li class="divider"></li>
+                <li><a class="btn btn-link" @click="logout()"><font color="red"> Uitloggen</font></a></li>
+                <li class="divider"></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"> <span class="glyphicon glyphicon-shopping-cart"></span> {{ cart.length }} - Items<span class="caret"></span></a>
                     <ul class="dropdown-menu dropdown-cart" role="menu">
-                        <li><a class="text-center" @click="toggleCartDisplay()">Toon {{cartDisplaySettings}} details</a></li>
+                        <li><a class="btn btn-link" @click="toggleCartDisplay()">Toon {{cartDisplaySettings}} details</a></li>
                         <li class="divider"></li>
                         <!-- show less items -->
                         <div v-if="showLess">
@@ -28,7 +33,7 @@
                                 <span class="item">
                                    <span class="item-left">
                                        <span class="item-info">
-                                           <span>{{item.productName}} ${{item.price}} <button @click="removeFromCart(index)" class="btn btn-xs btn-danger pull-right">x</button></span>
+                                           <span>{{item.productName}} &euro;{{item.price}} <button @click="removeFromCart(index)" class="btn btn-xs btn-danger pull-right">x</button></span>
                                        </span>
                                    </span>
                                 </span>
@@ -43,7 +48,7 @@
                                        <img src="http://lorempixel.com/50/50/" alt="" />
                                        <span class="item-info">
                                            <span>{{item.productName}}</span>
-                                           <span>${{item.price}}</span>
+                                           <span>&euro;{{item.price}}</span>
                                        </span>
                                    </span>
                                    <span class="item-right">
@@ -54,13 +59,23 @@
                             </div>
                         </div>
                         <li class="divider"></li>
-                        <li><a class="text-center">Totaal: ${{ cartTotal }}</a></li>
+                        <li><a class="text-center">Totaal: &euro;{{ cartTotal }}</a></li>
                         <li class="divider"></li>
-                        <li><a class="text-center" @click="createOrder()">Bestellen en betalen</a></li>
+                        <li><a class="btn btn-link" @click="createOrder()">Bestellen</a></li>
                         <li class="divider"></li>
-                        <li><a class="text-center" @click="clearCart()"><font color="red"> Winkelwagen legen</font></a></li>
+                        <li><a class="btn btn-link" @click="clearCart()"><font color="red"> Winkelwagen legen</font></a></li>
                     </ul>
                 </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="divider"></li>
+                <li><router-link to="order">Mijn bestellingen</router-link></li>
+                <li class="divider"></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="divider"></li>
+                <li><router-link to="home">Producten</router-link></li>
+                <li class="divider"></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->

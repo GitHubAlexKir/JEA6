@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import login from './components/login.vue';
 import home from './components/home.vue';
+import order from './components/order.vue'
 import moment from 'moment';
 import VueSweetalert2 from 'vue-sweetalert2';
 
@@ -15,7 +16,8 @@ window.Bus = new Vue();
 
 const routes = [
     { path: '/', component: login, name: 'login', meta: { guest: true }},
-    { path: '/home', component: home, name: 'home', meta: { requiresAuth: true }}
+    { path: '/home', component: home, name: 'home', meta: { requiresAuth: true }},
+    { path: '/order', component: order, name: 'order', meta: { requiresAuth: true }}
 ];
 
 const router = new VueRouter({

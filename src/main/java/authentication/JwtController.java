@@ -20,6 +20,7 @@ import javax.ws.rs.core.Response;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 
@@ -67,9 +68,22 @@ public class JwtController {
         JsonResponse json = new JsonResponse();
         json.setData(newUser);
         if (newUser.getPassword1().length() == 0 || !newUser.getPassword1().equals(newUser.getPassword2())) {
-            json.setErrorMsg("Both passwords have to be the same");
-            json.setStatus("FAILED");
-            return Response.status(500).entity(json).build();
+            json.setErrorMsg("Beide wachtwoorden moeten hetzelfde zijn");
+            json.setStatus("Mislukt");
+            return Response.status(409).entity(json).build();
+        }
+        try {
+            if (repo.find(newUser.getEmail()) != null) {
+                json.setErrorMsg("Email Is al geregistreerd.");
+                json.setStatus("Mislukt");
+                return Response.status(409).entity(json).build();
+            }
+        }catch (NullPointerException e){
+            //not found
+        }
+        json = isValid(newUser.getPassword1(),json);
+        if (json.getErrorMsg() != ""){
+            return Response.status(409).entity(json).build();
         }
         User user = new User(newUser);
         List<Privilege> privileges = new ArrayList<Privilege>();
@@ -99,6 +113,28 @@ public class JwtController {
         repo.detach(user);
         user.setPassword(null);
         return Response.ok().entity(user).build();
+    }
+    private JsonResponse isValid(String passwordhere,  JsonResponse jsonResponse) {
+
+        Pattern UpperCasePatten = Pattern.compile("[A-Z ]");
+        Pattern lowerCasePatten = Pattern.compile("[a-z ]");
+        Pattern digitCasePatten = Pattern.compile("[0-9 ]");
+        jsonResponse.setErrorMsg("");
+        if (passwordhere.length() < 12) {
+            jsonResponse.setErrorMsg(jsonResponse.getErrorMsg() + "Wachtwoordlengte moet minimaal 12 tekens lang zijn\n");
+        }
+        if (!UpperCasePatten.matcher(passwordhere).find()) {
+            jsonResponse.setErrorMsg(jsonResponse.getErrorMsg() + "Wachtwoord moet minimaal één hoofdletter bevatten\n");
+        }
+        if (!lowerCasePatten.matcher(passwordhere).find()) {
+            jsonResponse.setErrorMsg(jsonResponse.getErrorMsg() + "Wachtwoord moet minimaal één kleine letter bevatten\n");
+        }
+        if (!digitCasePatten.matcher(passwordhere).find()) {
+            jsonResponse.setErrorMsg(jsonResponse.getErrorMsg() + "Wachtwoord moet minimaal één cijfer hebben\n");
+        }
+
+        return jsonResponse;
+
     }
 
 }

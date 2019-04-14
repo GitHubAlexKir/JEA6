@@ -1,7 +1,6 @@
 package Repository;
 
 import Interceptor.SimpleInterceptor;
-import com.google.gson.Gson;
 import domain.order.Order;
 import org.json.JSONObject;
 import service.Sender;
@@ -34,12 +33,6 @@ public class OrderRepository {
        return order;
    }
 
-    public List<Order> findOrdersWithUserEmail(String userEmail) {
-        return em.createQuery("SELECT o FROM Order o where o.userEmail = :userEmail", Order.class)
-                .setParameter("userEmail", userEmail)
-                .getResultList();
-    }
-
     public List<Order> findAll() {
        return em.createQuery("SELECT i FROM Order i", Order.class)
                       .getResultList();
@@ -54,5 +47,11 @@ public class OrderRepository {
        orderToRemove.setItems(null);
        em.remove(orderToRemove);
        return true;
+    }
+
+    public List<Order> findAllWithUserEmail(String email) {
+        return em.createQuery("SELECT o FROM Order o where o.userEmail = :userEmail", Order.class)
+                .setParameter("userEmail", email)
+                .getResultList();
     }
 }

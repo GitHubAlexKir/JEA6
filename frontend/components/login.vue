@@ -152,11 +152,55 @@
             },
             registerSubmit(){
                 axios.post('api/jwt/register', this.UserRegister).then(({data}) => {
-                    location.reload();
+                    let timerInterval;
+                    this.$swal.fire({
+                        title: 'Account is aangemaakt!',
+                        html: 'U kunt nu inloggen, gegevens worden alvast ingevuld',
+                        timer: 1000,
+                        onBeforeOpen: () => {
+                            this.$swal.showLoading();
+                            timerInterval = setInterval(() => {
+                                this.$swal.getContent().querySelector('strong')
+                                    .textContent = Swal.getTimerLeft()
+                            }, 100)
+                        },
+                        onClose: () => {
+                            clearInterval(timerInterval);
+                            this.UserLogin.email = this.UserRegister.email;
+                            this.UserLogin.password = this.UserRegister.password1;
+                            this.UserRegister = {
+                                email: null,
+                                password1: null,
+                                password2: null,
+                                firstName: null,
+                                lastName: null,
+                                addressInformationDTO: {
+                                    addressee: null,
+                                    address: null,
+                                    zip: null,
+                                    city: null
+                                }
+                            }
+                        }
+                    }).then((result) => {
+                        if (
+                            // Read more about handling dismissals
+                            result.dismiss === Swal.DismissReason.timer
+                        ) {
+                            console.log('I was closed by the timer')
+                        }
+                    });
 
-                }).catch(() => {
-                    this.wrong = true;
-                })
+                }).catch((error) => {
+                    let title = error.response.data.status;
+                    let body = error.response.data.errorMsg;
+                    this.$swal.fire(
+                        title,
+                        body,
+                        'error'
+                    )
+                });
+
             }
         }
     }

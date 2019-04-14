@@ -59,7 +59,7 @@
                                         </div>
                                         <div class="col-md-6 col-xs-6 price">
                                             <h3>
-                                                <label>{{item.price}}</label></h3>
+                                                <label><span>&#8364;</span>{{item.price}}</label></h3>
                                         </div>
                                     </div>
                                     <p>{{item.productNumber}}</p>
@@ -102,10 +102,6 @@
             });
         },
         methods: {
-            logout() {
-                localStorage.clear();
-                window.location = '/1/';
-            },
             addToCart(item){
                 this.$refs.navbar.addToCart(item);
                 this.$swal.fire(

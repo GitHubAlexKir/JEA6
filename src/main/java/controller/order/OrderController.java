@@ -2,6 +2,8 @@ package controller.order;
 
 import Interceptor.SimpleInterceptor;
 import Repository.OrderRepository;
+import config.JwtTokenUtil;
+import domain.authentication.User;
 import domain.dto.OrderDTO;
 import domain.order.Order;
 import org.json.JSONObject;
@@ -10,7 +12,9 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.json.JsonObject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
@@ -25,7 +29,7 @@ import java.util.Map;
 public class OrderController {
     @EJB
     OrderRepository repo;
-
+    private JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
     public OrderController()
     {
 
@@ -54,10 +58,14 @@ public class OrderController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getOrders()
+    public Response getOrders(@Context HttpServletRequest req)
     {
+        String authorizationHeader = req.getHeader("Authorization");
+        // Extract the token from the HTTP Authorization header
+        String token = authorizationHeader.substring("Bearer".length()).trim();
+        String email = jwtTokenUtil.getUsernameFromToken(token);
         JSONObject response = new JSONObject();
-        response.put("orders",repo.findAll());
+        response.put("orders",repo.findAllWithUserEmail(email));
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/order")));
         return Response.ok(response.toString(2)).build();
     }
