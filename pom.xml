@@ -106,6 +106,12 @@
       <version>8.0</version>
       <scope>provided</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.sun.grizzly/grizzly-websockets -->
+    <dependency>
+      <groupId>com.sun.grizzly</groupId>
+      <artifactId>grizzly-websockets</artifactId>
+      <version>2.0.0-RC1</version>
+    </dependency>
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
@@ -120,6 +126,11 @@
       <groupId>com.rabbitmq</groupId>
       <artifactId>amqp-client</artifactId>
       <version>5.7.0</version>
+    </dependency>
+    <dependency>
+      <groupId>javax</groupId>
+      <artifactId>javaee-api</artifactId>
+      <version>8.0</version>
     </dependency>
   </dependencies>
 

@@ -77,6 +77,11 @@
                 <li><router-link to="home">Producten</router-link></li>
                 <li class="divider"></li>
             </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="divider"></li>
+                <li><router-link to="chat">Chat</router-link></li>
+                <li class="divider"></li>
+            </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
     </nav>
