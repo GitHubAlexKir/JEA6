@@ -4,26 +4,26 @@ import Interceptor.SimpleInterceptor;
 import Repository.ItemRepository;
 import Repository.OrderRepository;
 import config.JwtTokenUtil;
-import domain.authentication.User;
 import domain.dto.OrderDTO;
-import domain.item.Item;
 import domain.order.Order;
 import filter.JWTTokenNeeded;
+import filter.WorkerRoleNeeded;
 import org.json.JSONObject;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
-import javax.json.JsonObject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 @Path("/order")
@@ -61,7 +61,17 @@ public class OrderController {
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/order/" + order.getId())));
         return Response.ok(response.toString(2)).build();
     }
-
+    @WorkerRoleNeeded
+    @GET
+    @Path("/worker")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllOrders(@Context HttpServletRequest req)
+    {
+        JSONObject response = new JSONObject();
+        response.put("orders",repo.findAll());
+        response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/order")));
+        return Response.ok(response.toString(2)).build();
+    }
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getOrders(@Context HttpServletRequest req)
@@ -85,6 +95,25 @@ public class OrderController {
         Order order = new Order(orderDTO);
         order = repo.create(order);
         itemRepo.removeFromStock(order.getItems());
+        response.put("order",order.toMap());
+        response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/order")));
+        return Response.ok(response.toString(2)).build();
+    }
+    @POST
+    @Path("/sent")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response sent(OrderDTO orderDTO)
+    {
+        JSONObject response = new JSONObject();
+        Order order = repo.find(orderDTO.getId());
+        order.setDispatched(true);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        c.add(Calendar.DATE, 1);  // number of days to add
+        order.setExpectedArrival(dateFormat.format(c.getTime()));
+        order = repo.update(order);
         response.put("order",order.toMap());
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/order")));
         return Response.ok(response.toString(2)).build();

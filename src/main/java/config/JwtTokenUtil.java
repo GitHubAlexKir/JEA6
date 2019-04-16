@@ -39,11 +39,11 @@ public class JwtTokenUtil implements Serializable {
                 .getBody();
     }
 
-    public boolean containsScopeInToken(String token) {
+    public boolean containsScopeInToken(String token,String scopeName) {
         System.out.println(getAllClaimsFromToken(token).get("scopes"));
         String scope = getAllClaimsFromToken(token).get("scopes").toString();
         System.out.println("DECODED SCOPES " + scope);
-        return scope.contains("Owner");
+        return scope.contains(scopeName);
 
     }
 

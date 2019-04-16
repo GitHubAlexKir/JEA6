@@ -8,15 +8,9 @@ public class ItemDTO {
     private double price;
     private String productName;
     private int stock;
+    private String warehouseLocation;
 
     public ItemDTO() {
-    }
-
-    public ItemDTO(long productNumber, double price, String productName, int stock) {
-        this.productNumber = productNumber;
-        this.price = price;
-        this.productName = productName;
-        this.stock = stock;
     }
 
     public long getId() {
@@ -59,14 +53,23 @@ public class ItemDTO {
         this.stock = stock;
     }
 
+    public String getWarehouseLocation() {
+        return warehouseLocation;
+    }
+
+    public void setWarehouseLocation(String warehouseLocation) {
+        this.warehouseLocation = warehouseLocation;
+    }
+
     @Override
     public String toString() {
-        return "ItemDTO{" +
+        return "{" +
                 "id=" + id +
                 ", productNumber=" + productNumber +
                 ", price=" + price +
                 ", productName='" + productName + '\'' +
                 ", stock=" + stock +
+                ", warehouseLocation='" + warehouseLocation + '\'' +
                 '}';
     }
 }

@@ -8,6 +8,7 @@ public class OrderDTO {
     private List<ItemDTO> items;
     private boolean dispatched;
     private AddressInformationDTO addressInformationDTO;
+    private String expectedArrival;
 
     public OrderDTO() {
     }
@@ -50,6 +51,14 @@ public class OrderDTO {
 
     public void setAddressInformationDTO(AddressInformationDTO addressInformationDTO) {
         this.addressInformationDTO = addressInformationDTO;
+    }
+
+    public String getExpectedArrival() {
+        return expectedArrival;
+    }
+
+    public void setExpectedArrival(String expectedArrival) {
+        this.expectedArrival = expectedArrival;
     }
 
     @Override

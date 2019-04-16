@@ -1,7 +1,6 @@
 package filter;
 
 import config.JwtTokenUtil;
-import domain.authentication.Privilege;
 
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
@@ -10,13 +9,12 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
-import java.util.ArrayList;
 
 @Provider
 
-@OwnerRoleNeeded
+@WorkerRoleNeeded
 @Priority(Priorities.AUTHENTICATION)
-public class OwnerRoleNeededFilter implements ContainerRequestFilter {
+public class WorkerRoleNeededFilter implements ContainerRequestFilter {
     private JwtTokenUtil  jwt = new JwtTokenUtil();
     @Override
     public void filter(ContainerRequestContext requestContext) {
@@ -30,11 +28,11 @@ public class OwnerRoleNeededFilter implements ContainerRequestFilter {
                 System.out.println("#### valid token : " + token);
                 System.out.println(jwt.getAllClaimsFromToken(token).get("scopes").toString());
                 System.out.println("BEFORE CONTAINS IN SCOPE : OWNERROLENEEDEDFILTER");
-                if (jwt.containsScopeInToken(token,"Owner")){
-                    System.out.println("#### has Role Owner : " + token);
+                if (jwt.containsScopeInToken(token,"Worker")){
+                    System.out.println("#### has Role Worker : " + token);
                 }
                 else {
-                    System.out.println("#### Missing role owner : " + token);
+                    System.out.println("#### Missing role Worker : " + token);
                     requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
                 }
             }

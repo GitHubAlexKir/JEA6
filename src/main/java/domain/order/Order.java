@@ -1,6 +1,5 @@
 package domain.order;
 
-import com.google.gson.Gson;
 import domain.authentication.AddressInformation;
 import domain.dto.ItemDTO;
 import domain.dto.OrderDTO;
@@ -25,9 +24,12 @@ public class Order {
     private AddressInformation addressInformation;
     @Column(nullable = false)
     private boolean dispatched;
+    @Column(name = "expected_arrival")
+    private String expectedArrival;
 
     public Order() {
     }
+
     public Order(OrderDTO orderDTO) {
         this.userEmail = orderDTO.getUserEmail();
         this.dispatched = orderDTO.isDispatched();
@@ -37,6 +39,7 @@ public class Order {
             convertedItems.add(new Item(itemDTO));
         }
         this.items = convertedItems;
+        this.expectedArrival = "";
         this.addressInformation = new AddressInformation(orderDTO.getAddressInformationDTO());
     }
 
@@ -80,6 +83,14 @@ public class Order {
         this.addressInformation = addressInformation;
     }
 
+    public String getExpectedArrival() {
+        return expectedArrival;
+    }
+
+    public void setExpectedArrival(String expectedArrival) {
+        this.expectedArrival = expectedArrival;
+    }
+
     public JSONObject toMap() {
         JSONObject response = new JSONObject();
        response.put("id", this.id);
@@ -87,17 +98,19 @@ public class Order {
         response.put("items",this.items);
         response.put("dispatched", this.dispatched);
         response.put("addressInformation",this.addressInformation.toMap());
+        response.put("expectedArrival", this.expectedArrival);
         return response;
     }
 
     @Override
     public String toString() {
-        return "Order{" +
+        return "{" +
                 "id=" + id +
                 ", userEmail='" + userEmail + '\'' +
                 ", items=" + items +
                 ", addressInformation=" + addressInformation.toString() +
                 ", dispatched=" + dispatched +
+                ", expectedArrival='" + expectedArrival + '\'' +
                 '}';
     }
 }

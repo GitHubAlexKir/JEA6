@@ -20,6 +20,8 @@ public class Item implements Serializable {
     private String productName;
     @Column(nullable = false)
     private int stock;
+    @Column(name = "warehouse_location",nullable = false)
+    private String warehouseLocation;
 
 
     public Item() {
@@ -34,6 +36,7 @@ public class Item implements Serializable {
         this.productName = itemDTO.getProductName();
         this.productNumber = itemDTO.getProductNumber();
         this.stock = itemDTO.getStock();
+        this.warehouseLocation = itemDTO.getWarehouseLocation();
     }
 
 
@@ -76,6 +79,15 @@ public class Item implements Serializable {
     public void setStock(int stock) {
         this.stock = stock;
     }
+
+    public String getWarehouseLocation() {
+        return warehouseLocation;
+    }
+
+    public void setWarehouseLocation(String warehouseLocation) {
+        this.warehouseLocation = warehouseLocation;
+    }
+
     public Map toMap() {
         java.util.Map<String, String> map = new HashMap<>();
         map.put("id", String.valueOf(this.id));
@@ -83,16 +95,19 @@ public class Item implements Serializable {
         map.put("productNumber",String.valueOf(this.productNumber));
         map.put("productName",this.productName);
         map.put("stock",String.valueOf(this.stock));
+        map.put("warehouseLocation",this.warehouseLocation);
         return map;
     }
+
     @Override
     public String toString() {
-        return "Item{" +
+        return "{" +
                 "id=" + id +
                 ", productNumber=" + productNumber +
                 ", price=" + price +
                 ", productName='" + productName + '\'' +
                 ", stock=" + stock +
+                ", warehouseLocation='" + warehouseLocation + '\'' +
                 '}';
     }
 }

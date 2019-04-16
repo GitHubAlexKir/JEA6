@@ -3,13 +3,13 @@
         <navbar ref="navbar"></navbar>
         <div class="pageheader">
             <div class="container">
-                <h2 class="title">Mijn Bestellingen</h2>
-                <p>Controlleer hier uw huidige status van de bestelling.</p>
+                <h2 class="title">Geplaatste Bestellingen - Medewerker pagina</h2>
             </div>
         </div>
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
+                        <p v-if="wrong">Je bent geen medewerker van AlcoholGigant</p>
                         <div v-for="order in orders" class="col-sm-6 col-md-4">
                             <div class="thumbnail">
                                 <h4 class="text-center"><span class="label label-info">{{order.id}}</span></h4>
@@ -18,11 +18,8 @@
                                         <div class="col-md-6 col-xs-6">
                                             <h3>{{item.productName}}</h3>
                                         </div>
-                                        <div class="col-md-6 col-xs-6 price">
-                                            <h3>
-                                                <label><span>&#8364;</span>{{item.price}}</label></h3>
-                                        </div>
                                         <p>{{item.productNumber}}</p>
+                                        <p>{{item.warehouseLocation}}</p>
                                     </div>
                                     <p> </p>
                                 </div>
@@ -43,10 +40,10 @@
                                 </h6>
                                 <div v-if="order.dispatched">
                                     <h4 class="text-center"><span class="label label-success">Verzonden</span></h4>
-                                    <p>Verwachte bezorgdatum: {{order.expectedArrival}}</p>
                                 </div>
                                 <div v-else>
                                     <h4 class="text-center"><span class="label label-danger">Nog niet verzonden</span></h4>
+                                    <a @click="OrderShipped(order)" class="btn btn-success">Update</a>
                                 </div>
                             </div>
                         </div>
@@ -72,11 +69,16 @@
             axios.get('api/jwt/user').then(({data}) => {
                 this.user = data;
             });
-            axios.get('api/order').then(({data}) => {
+            axios.get('api/order/worker').then(({data}) => {
                 this.orders = data.orders;
             });
         },
         methods: {
+            OrderShipped(order){
+                axios.post('api/order/sent',order).then(({data}) => {
+                    order = data.order;
+                });
+            }
 
         }
     }

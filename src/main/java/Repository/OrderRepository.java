@@ -2,9 +2,6 @@ package Repository;
 
 import Interceptor.SimpleInterceptor;
 import domain.order.Order;
-import org.json.JSONObject;
-import service.Sender;
-
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
@@ -15,21 +12,19 @@ import java.util.List;
 import static javax.transaction.Transactional.TxType.REQUIRED;
 
 @Stateless
-
 @Interceptors(SimpleInterceptor.class)
 public class OrderRepository {
 
    @PersistenceContext(unitName = "myPU")
    private EntityManager em;
-   private Sender sender = new Sender("Shipment");
 
-   @Transactional(REQUIRED)
+    public OrderRepository() {
+    }
+
+    @Transactional(REQUIRED)
    public Order create(Order order) {
        em.persist(order);
        em.flush();
-       JSONObject jsonObject = new JSONObject();
-       jsonObject.put("order",order.toMap());
-       sender.send(jsonObject.toString(2));
        return order;
    }
 
@@ -55,4 +50,9 @@ public class OrderRepository {
                 .getResultList();
     }
 
+    public Order update(Order order) {
+        em.merge(order);
+        em.flush();
+        return order;
+    }
 }
