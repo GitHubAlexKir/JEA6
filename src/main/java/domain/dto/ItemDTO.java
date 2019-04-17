@@ -1,6 +1,8 @@
 package domain.dto;
 
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemDTO {
     private long id;
@@ -9,6 +11,7 @@ public class ItemDTO {
     private String productName;
     private int stock;
     private String warehouseLocation;
+    private List<ReviewDTO> reviews;
 
     public ItemDTO() {
     }
@@ -61,15 +64,24 @@ public class ItemDTO {
         this.warehouseLocation = warehouseLocation;
     }
 
+    public List<ReviewDTO> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<ReviewDTO> reviews) {
+        this.reviews = reviews;
+    }
+
     @Override
     public String toString() {
-        return "{" +
+        return "ItemDTO{" +
                 "id=" + id +
                 ", productNumber=" + productNumber +
                 ", price=" + price +
                 ", productName='" + productName + '\'' +
                 ", stock=" + stock +
                 ", warehouseLocation='" + warehouseLocation + '\'' +
+                ", reviews=" + reviews.toString() +
                 '}';
     }
 }

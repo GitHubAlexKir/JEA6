@@ -40,20 +40,16 @@ public class ItemTest {
     public void CreateItemWithAdminAccount(){
             RestAssured.requestSpecification = new RequestSpecBuilder().addHeader("Authorization", "Bearer " + UserSetup.getOwnerToken()).build();
             ItemDTO itemDTO = new ItemDTO();
-            itemDTO.setProductName("Test Fles 1L");
-            itemDTO.setProductNumber(22761555038506l);
-            itemDTO.setPrice(99.99);
-            itemDTO.setStock(100);
+            itemDTO.setProductName("Test Fles 4L");
+            itemDTO.setProductNumber(442761555038506l);
+            itemDTO.setPrice(499.99);
+            itemDTO.setStock(60);
             itemDTO.setWarehouseLocation("5B");
             Response r = given()
                     .contentType("application/json")
                     .body(itemDTO)
                     .when().post("/item").then()
                     .statusCode(200)
-                    .body("item.productName", equalTo(itemDTO.getProductName()))
-                    .body("item.productNumber", equalTo(String.valueOf(itemDTO.getProductNumber())))
-                    .body("item.price", equalTo(String.valueOf(itemDTO.getPrice())))
-                    .body("item.stock", equalTo(String.valueOf(itemDTO.getStock())))
                     .extract().response();
             createdItem  =  r.getBody().jsonPath().getObject("item", Item.class);
             System.out.println("//created Item");

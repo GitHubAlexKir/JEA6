@@ -6,7 +6,7 @@ import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
 
 public class UserSetup {
-    private static String userEmail = "Alex2@RestAssured.com";
+    private static String userEmail = "Alex@RestAssured.com";
     private static String userPassword = "RmUxae9qZwXhhBhVdTkBZEY8KQMsCga49FhhmKxrWX7QeRdEcd";
     private static String ownerEmail = "Owner@RestAssured.com";
     private static String ownerPassword = "RmUxae9qZwXhhBhVdTkBZEY8KQMsCga49FhhmKxrWX7QeRdEcd";
@@ -20,6 +20,7 @@ public class UserSetup {
     public static String getToken(){
         if (!login()){
             registerCustomer();
+            registerAdminWithoutRole();
             login();
         }
         return token;
@@ -41,6 +42,27 @@ public class UserSetup {
         userDTO.setPassword2(userPassword);
         userDTO.setFirstName("Test");
         userDTO.setLastName("User");
+        userDTO.setAddressInformationDTO(addressInformationDTO);
+        given().contentType("application/json")
+                .body(userDTO)
+                .when().post("/jwt/register")
+                .then().statusCode(200);
+
+    }
+    private static void registerAdminWithoutRole() {
+        System.out.println("Creating Admin account with email " + userEmail);
+        System.out.println("DONT FORGET TO CHANGE ROLE IN DB");
+        AddressInformationDTO addressInformationDTO = new AddressInformationDTO();
+        addressInformationDTO.setAddressee("Test ADMIN");
+        addressInformationDTO.setAddress("Test Address 15");
+        addressInformationDTO.setCity("TestCity");
+        addressInformationDTO.setZip("4444XX");
+        UserDTO userDTO = new UserDTO();
+        userDTO.setEmail(ownerEmail);
+        userDTO.setPassword1(ownerPassword);
+        userDTO.setPassword2(ownerPassword);
+        userDTO.setFirstName("Test");
+        userDTO.setLastName("ADMIN");
         userDTO.setAddressInformationDTO(addressInformationDTO);
         given().contentType("application/json")
                 .body(userDTO)

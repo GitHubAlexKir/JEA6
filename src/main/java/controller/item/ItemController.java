@@ -3,7 +3,9 @@ package controller.item;
 import Interceptor.SimpleInterceptor;
 import Repository.ItemRepository;
 import domain.dto.ItemDTO;
+import domain.dto.ReviewDTO;
 import domain.item.Item;
+import domain.item.Review;
 import filter.JWTTokenNeeded;
 import filter.OwnerRoleNeeded;
 import org.json.JSONObject;
@@ -63,9 +65,23 @@ public class ItemController {
     }
 
     @POST
+    @Path("/review/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @OwnerRoleNeeded
+    public Response saveReview(@PathParam("id") long id, ReviewDTO reviewDTO)
+    {
+        JSONObject response = new JSONObject();
+       Review review = new Review(reviewDTO);
+        Item item = repo.find(id);
+        item.getReviews().add(review);
+        item = repo.save(item);
+        response.put("item",item.toMap());
+        response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/item")));
+        return Response.ok(response.toString(2)).build();
+    }
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response save(ItemDTO itemDTO)
     {
         JSONObject response = new JSONObject();

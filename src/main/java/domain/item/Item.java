@@ -1,10 +1,14 @@
 package domain.item;
 
 import domain.dto.ItemDTO;
+import domain.dto.ReviewDTO;
+import org.json.JSONObject;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -22,6 +26,8 @@ public class Item implements Serializable {
     private int stock;
     @Column(name = "warehouse_location",nullable = false)
     private String warehouseLocation;
+    @OneToMany(fetch=FetchType.EAGER,cascade = CascadeType.PERSIST)
+    private List<Review> reviews  = new ArrayList<Review>();
 
 
     public Item() {
@@ -29,9 +35,16 @@ public class Item implements Serializable {
     public Item(ItemDTO itemDTO) {
         try {
             this.id = itemDTO.getId();
+            List<Review> convertedReviews = new ArrayList<>();
+            for (ReviewDTO reviewDTO:itemDTO.getReviews()
+            ) {
+                convertedReviews.add(new Review(reviewDTO));
+            }
+            this.reviews = convertedReviews;
         }catch (NullPointerException e){
             //New item, dont set id
         }
+
         this.price = itemDTO.getPrice();
         this.productName = itemDTO.getProductName();
         this.productNumber = itemDTO.getProductNumber();
@@ -88,15 +101,24 @@ public class Item implements Serializable {
         this.warehouseLocation = warehouseLocation;
     }
 
-    public Map toMap() {
-        java.util.Map<String, String> map = new HashMap<>();
-        map.put("id", String.valueOf(this.id));
-        map.put("price", String.valueOf(this.price));
-        map.put("productNumber",String.valueOf(this.productNumber));
-        map.put("productName",this.productName);
-        map.put("stock",String.valueOf(this.stock));
-        map.put("warehouseLocation",this.warehouseLocation);
-        return map;
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    public JSONObject toMap() {
+        JSONObject response = new JSONObject();
+        response.put("id", this.id);
+        response.put("price", this.price);
+        response.put("productNumber",this.productNumber);
+        response.put("productName",this.productName);
+        response.put("stock",this.stock);
+        response.put("warehouseLocation",this.warehouseLocation);
+        response.put("reviews",this.reviews);
+        return response;
     }
 
     @Override

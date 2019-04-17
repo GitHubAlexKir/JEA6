@@ -2,6 +2,7 @@
     <div>
         <navbar ref="navbar"></navbar>
         <NewItemModal></NewItemModal>
+        <NewReviewModal ref="reviewmodal"></NewReviewModal>
         <div class="pageheader">
             <div class="container">
                 <h2 class="title">Welkom bij AlcoholGigant</h2>
@@ -62,6 +63,27 @@
                                                 <label>Prijs: <span>&#8364;</span>{{item.price}}</label></h3>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h4 class="text-center"><span class="label label-info">Reviews</span></h4>
+                                            <div v-if="item.reviews.length > 0">
+                                                <div v-for="review in item.reviews" class="col-md-auto">
+                                                    <h4><b>Auteur:</b> {{review.author}}</h4>
+                                                    <h4><b>Waardering:</b> {{review.appreciation}}/5 sterren</h4>
+                                                    <h4><b>Beschrijving:</b></h4>
+                                                    <h4> {{review.content}}</h4>
+                                                </div>
+                                            </div>
+                                            <div v-else>
+                                                <h4>Heeft nog geen waarderingen.</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="button" class="btn btn-primary" @click="setItem(item)" data-toggle="modal" data-target="#reviewModal">
+                                            Maak review aan.
+                                        </button>
+                                    </div>
                                     <p>Productnummer: {{item.productNumber}}</p>
                                     <div class="row">
                                         <div v-if="item.stock > 0" class="col-md-6">
@@ -90,13 +112,13 @@
     import axios from '../axios';
     import Navbar from "./navbar";
     import NewItemModal from "../modals/NewItemModal";
+    import NewReviewModal from "../modals/NewReviewModal";
     export default  {
         name: 'home',
-        components: {Navbar,NewItemModal},
+        components: {Navbar,NewItemModal,NewReviewModal},
         data() {
             return {
                 user:{},
-                itemid: 2,
                 items:[]
             }
         },
@@ -124,6 +146,9 @@
                     this.item = data.item;
                 });
             },
+            setItem(item){
+                this.$refs.reviewmodal.setItem(item);
+            }
         }
     }
 </script>
