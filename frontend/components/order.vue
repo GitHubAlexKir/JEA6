@@ -57,6 +57,9 @@
                                             amount="10.00"
                                             currency="USD"
                                             :client="credentials"
+                                            :invoice-number="order.id"
+                                            @payment-cancelled="paymentCancelled"
+                                            @payment-completed="paymentAuthorized"
                                             env="sandbox">
                                     </PayPal>
                                 </div>
@@ -81,7 +84,8 @@
                     sandbox: 'AVzin5N1oR7U8wAkmNF1w2y3cTZvKto8qK6wfoH-_2svdAh8D-akTmKNHt_h_ARwC9M78qogulP-Pl-G'
                 },
                 user:{},
-                orders:[]
+                orders:[],
+                order:{}
             }
         },
         created() {
@@ -93,7 +97,27 @@
             });
         },
         methods: {
-
+            paymentCancelled(e){
+                console.log(e);
+                this.$swal.fire(
+                    'Geanuleerd!',
+                    'Jouw order is NIET betaald.',
+                    'error'
+                )
+            },
+            paymentAuthorized(e){
+                console.log(e.transactions[0].invoice_number);
+                this.$swal.fire(
+                    'Betaald!',
+                    'Jouw order is betaald.',
+                    'success'
+                );
+                axios.post('api/order/paid/' + e.transactions[0].invoice_number).then(({data}) => {
+                    axios.get('api/order').then(({data}) => {
+                        this.orders = data.orders;
+                    });
+                });
+            }
         }
     }
 </script>

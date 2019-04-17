@@ -56,4 +56,12 @@ public class OrderRepository {
         em.flush();
         return order;
     }
+
+    public Order paid(long id) {
+        Order orderPaid = em.find(Order.class,id);
+        orderPaid.setPaid(true);
+        update(orderPaid);
+        em.flush();
+        return orderPaid;
+    }
 }

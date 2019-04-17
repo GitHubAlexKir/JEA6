@@ -38,6 +38,12 @@
                                 <h6>
                                     <b> Plaats: </b>{{ order.addressInformation.city }}
                                 </h6>
+                                <div v-if="order.paid">
+                                    <h4 class="text-center"><span class="label label-success">Betaald</span></h4>
+                                </div>
+                                <div v-else>
+                                    <h4 class="text-center"><span class="label label-danger">Nog niet betaald</span></h4>
+                                </div>
                                 <div v-if="order.dispatched">
                                     <h4 class="text-center"><span class="label label-success">Verzonden</span></h4>
                                     <b>Verwachte berzorgdatum: </b>{{ order.expectedArrival }}

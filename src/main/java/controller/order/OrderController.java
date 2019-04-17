@@ -130,6 +130,17 @@ public class OrderController {
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/order/" + id)));
         return Response.ok(response.toString(2)).build();
     }
+    @POST
+    @Path("/paid/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response paid(@PathParam("id") long id)
+    {
+        JSONObject response = new JSONObject();
+        response.put("Order_id paid",repo.paid(id));
+        response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/order/" + id)));
+        return Response.ok(response.toString(2)).build();
+    }
 
     private Map<String, URI> getLinks(URI self)
     {

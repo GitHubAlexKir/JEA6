@@ -3166,6 +3166,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 
@@ -3181,7 +3184,8 @@ __webpack_require__.r(__webpack_exports__);
         sandbox: 'AVzin5N1oR7U8wAkmNF1w2y3cTZvKto8qK6wfoH-_2svdAh8D-akTmKNHt_h_ARwC9M78qogulP-Pl-G'
       },
       user: {},
-      orders: []
+      orders: [],
+      order: {}
     };
   },
   created: function created() {
@@ -3196,7 +3200,25 @@ __webpack_require__.r(__webpack_exports__);
       _this.orders = data.orders;
     });
   },
-  methods: {}
+  methods: {
+    paymentCancelled: function paymentCancelled(e) {
+      console.log(e);
+      this.$swal.fire('Geanuleerd!', 'Jouw order is NIET betaald.', 'error');
+    },
+    paymentAuthorized: function paymentAuthorized(e) {
+      var _this2 = this;
+
+      console.log(e.transactions[0].invoice_number);
+      this.$swal.fire('Betaald!', 'Jouw order is betaald.', 'success');
+      _axios__WEBPACK_IMPORTED_MODULE_0__["default"].post('api/order/paid/' + e.transactions[0].invoice_number).then(function (_ref3) {
+        var data = _ref3.data;
+        _axios__WEBPACK_IMPORTED_MODULE_0__["default"].get('api/order').then(function (_ref4) {
+          var data = _ref4.data;
+          _this2.orders = data.orders;
+        });
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -3212,6 +3234,12 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../axios */ "./frontend/axios.js");
 /* harmony import */ var _navbar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./navbar */ "./frontend/components/navbar.vue");
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -45267,7 +45295,12 @@ var render = function() {
                               amount: "10.00",
                               currency: "USD",
                               client: _vm.credentials,
+                              "invoice-number": order.id,
                               env: "sandbox"
+                            },
+                            on: {
+                              "payment-cancelled": _vm.paymentCancelled,
+                              "payment-completed": _vm.paymentAuthorized
                             }
                           })
                         ],
@@ -45447,9 +45480,13 @@ var render = function() {
                       )
                     ]),
                     _vm._v(" "),
+                    order.paid
+                      ? _c("div", [_vm._m(2, true)])
+                      : _c("div", [_vm._m(3, true)]),
+                    _vm._v(" "),
                     order.dispatched
                       ? _c("div", [
-                          _vm._m(2, true),
+                          _vm._m(4, true),
                           _vm._v(" "),
                           _c("b", [_vm._v("Verwachte berzorgdatum: ")]),
                           _vm._v(
@@ -45458,7 +45495,7 @@ var render = function() {
                           )
                         ])
                       : _c("div", [
-                          _vm._m(3, true),
+                          _vm._m(5, true),
                           _vm._v(" "),
                           _c(
                             "a",
@@ -45503,6 +45540,24 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("h4", [_c("b", [_vm._v(" Verzending informatie ")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h4", { staticClass: "text-center" }, [
+      _c("span", { staticClass: "label label-success" }, [_vm._v("Betaald")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h4", { staticClass: "text-center" }, [
+      _c("span", { staticClass: "label label-danger" }, [
+        _vm._v("Nog niet betaald")
+      ])
+    ])
   },
   function() {
     var _vm = this
