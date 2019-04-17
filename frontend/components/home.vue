@@ -51,7 +51,7 @@
                         <div v-for="item in items" class="col-sm-6 col-md-4">
                             <div class="thumbnail">
                                 <h4 class="text-center"><span class="label label-warning">< 18 jaar verkopen wij geen alcohol</span></h4>
-                                <img src="http://lorempixel.com/650/450" class="img-responsive">
+                                <img src="/webshop/images/alcohol-template.jpg" class="img-responsive">
                                 <div class="caption">
                                     <div class="row">
                                         <div class="col-md-6 col-xs-6">

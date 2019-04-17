@@ -23,6 +23,7 @@ public class OrderRepository {
 
     @Transactional(REQUIRED)
    public Order create(Order order) {
+        System.out.println("CREATING " +order.toString());
        em.persist(order);
        em.flush();
        return order;

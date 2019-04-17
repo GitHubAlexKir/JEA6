@@ -48,6 +48,18 @@
                                 <div v-else>
                                     <h4 class="text-center"><span class="label label-danger">Nog niet verzonden</span></h4>
                                 </div>
+                                <div v-if="order.paid">
+                                    <h4 class="text-center"><span class="label label-success">Betaald</span></h4>
+                                </div>
+                                <div v-else>
+                                    <h4 class="text-center"><span class="label label-danger">Nog niet betaald</span></h4>
+                                    <PayPal
+                                            amount="10.00"
+                                            currency="USD"
+                                            :client="credentials"
+                                            env="sandbox">
+                                    </PayPal>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -59,11 +71,15 @@
 <script>
     import axios from '../axios';
     import Navbar from "./navbar";
+    import PayPal from 'vue-paypal-checkout';
     export default  {
         name: 'order',
-        components: {Navbar},
+        components: {Navbar,PayPal},
         data() {
             return {
+                credentials: {
+                    sandbox: 'AVzin5N1oR7U8wAkmNF1w2y3cTZvKto8qK6wfoH-_2svdAh8D-akTmKNHt_h_ARwC9M78qogulP-Pl-G'
+                },
                 user:{},
                 orders:[]
             }

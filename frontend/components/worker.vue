@@ -19,7 +19,7 @@
                                             <h3>{{item.productName}}</h3>
                                         </div>
                                         <p>{{item.productNumber}}</p>
-                                        <p>{{item.warehouseLocation}}</p>
+                                        <p><b>Locatie:</b>{{item.warehouseLocation}}</p>
                                     </div>
                                     <p> </p>
                                 </div>
@@ -40,10 +40,11 @@
                                 </h6>
                                 <div v-if="order.dispatched">
                                     <h4 class="text-center"><span class="label label-success">Verzonden</span></h4>
+                                    <b>Verwachte berzorgdatum: </b>{{ order.expectedArrival }}
                                 </div>
                                 <div v-else>
                                     <h4 class="text-center"><span class="label label-danger">Nog niet verzonden</span></h4>
-                                    <a @click="OrderShipped(order)" class="btn btn-success">Update</a>
+                                    <a @click="OrderShipped(order)" class="btn btn-success text-center">Zet order op verzonden</a>
                                 </div>
                             </div>
                         </div>
@@ -77,6 +78,14 @@
             OrderShipped(order){
                 axios.post('api/order/sent',order).then(({data}) => {
                     order = data.order;
+                    this.$swal.fire(
+                        'Updated!',
+                        'order.id:' + order.id + ' verzonden met verwachte bezorgdatum: ' + order.expectedArrival,
+                        'success'
+                    );
+                    axios.get('api/order/worker').then(({data}) => {
+                        this.orders = data.orders;
+                    });
                 });
             }
 

@@ -9,6 +9,7 @@ public class OrderDTO {
     private boolean dispatched;
     private AddressInformationDTO addressInformationDTO;
     private String expectedArrival;
+    private boolean paid;
 
     public OrderDTO() {
     }
@@ -61,14 +62,24 @@ public class OrderDTO {
         this.expectedArrival = expectedArrival;
     }
 
+    public boolean isPaid() {
+        return paid;
+    }
+
+    public void setPaid(boolean paid) {
+        this.paid = paid;
+    }
+
     @Override
     public String toString() {
-        return "OrderDTO{" +
+        return "{" +
                 "id=" + id +
                 ", userEmail='" + userEmail + '\'' +
                 ", items=" + items +
                 ", dispatched=" + dispatched +
                 ", addressInformationDTO=" + addressInformationDTO.toString() +
+                ", expectedArrival='" + expectedArrival + '\'' +
+                ", paid=" + paid +
                 '}';
     }
 }

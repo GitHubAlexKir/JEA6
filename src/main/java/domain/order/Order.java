@@ -7,12 +7,13 @@ import domain.item.Item;
 import org.json.JSONObject;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="UserOrder")
-public class Order {
+@Table(name = "UserOrder")
+public class Order implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -26,6 +27,8 @@ public class Order {
     private boolean dispatched;
     @Column(name = "expected_arrival")
     private String expectedArrival;
+    @Column(nullable = false)
+    private boolean paid;
 
     public Order() {
     }
@@ -40,6 +43,7 @@ public class Order {
         }
         this.items = convertedItems;
         this.expectedArrival = "";
+        this.paid = orderDTO.isPaid();
         this.addressInformation = new AddressInformation(orderDTO.getAddressInformationDTO());
     }
 
@@ -91,6 +95,14 @@ public class Order {
         this.expectedArrival = expectedArrival;
     }
 
+    public boolean isPaid() {
+        return paid;
+    }
+
+    public void setPaid(boolean paid) {
+        this.paid = paid;
+    }
+
     public JSONObject toMap() {
         JSONObject response = new JSONObject();
        response.put("id", this.id);
@@ -99,6 +111,7 @@ public class Order {
         response.put("dispatched", this.dispatched);
         response.put("addressInformation",this.addressInformation.toMap());
         response.put("expectedArrival", this.expectedArrival);
+        response.put("paid", this.paid);
         return response;
     }
 
@@ -111,6 +124,7 @@ public class Order {
                 ", addressInformation=" + addressInformation.toString() +
                 ", dispatched=" + dispatched +
                 ", expectedArrival='" + expectedArrival + '\'' +
+                ", paid=" + paid +
                 '}';
     }
 }

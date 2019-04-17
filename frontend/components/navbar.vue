@@ -10,9 +10,8 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">AlcoholGigant</a>
+            <a class="navbar-brand"><router-link to="home" style="text-decoration: none;">AlcoholGigant</router-link></a>
         </div>
-
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
@@ -87,6 +86,11 @@
                 <li><router-link to="worker">Medewerkers</router-link></li>
                 <li class="divider"></li>
             </ul>
+            <ul class="nav navbar-nav navbar-left">
+                <li class="divider"></li>
+                <li><a><font color="black">Voor 20:00 besteld, morgen in huis.</font></a></li>
+                <li class="divider"></li>
+            </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
     </nav>
@@ -102,6 +106,7 @@
                     items: '',
                     userEmail: '',
                     dispatched: '0',
+                    paid: '0',
                     addressInformationDTO: {}
                 },
                 cart:[],
