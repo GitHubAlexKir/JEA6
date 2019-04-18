@@ -10,7 +10,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <p v-if="wrong">Je bent geen medewerker van AlcoholGigant</p>
-                        <div v-for="order in orders" class="col-sm-6 col-md-4">
+                        <div v-if="orders.length > 0"  v-for="order in orders" class="col-sm-6 col-md-4">
                             <div class="thumbnail">
                                 <h4 class="text-center"><span class="label label-info">{{order.id}}</span></h4>
                                 <div class="caption">
@@ -72,18 +72,47 @@
         data() {
             return {
                 user:{},
-                orders:[]
+                orders:[],
+                loading: true,
+                wrong: false
             }
         },
         created() {
             axios.get('api/jwt/user').then(({data}) => {
                 this.user = data;
             });
-            axios.get('api/order/worker').then(({data}) => {
-                this.orders = data.orders;
-            });
+            //axios.get('api/order/worker').then(({data}) => {
+            //    this.orders = data.orders;
+            //});
+            this.connect();
         },
         methods: {
+            connect() {
+                this.socket = new WebSocket("ws://localhost:8080/webshop/worker");
+                this.socket.onopen = () => {
+                    this.socket.onmessage = ({data}) => {
+                        this.orders = (JSON.parse(data)).orders;
+                        if (this.loading) {
+                            this.loading = false;
+                        }
+                        else{
+                            this.$swal.fire({
+                                // position: 'top-end',
+                                //type: 'success',
+                                title: 'Nieuwe update binnengekomen',
+                                //showConfirmButton: false,
+                                timer: 1000,
+                                backdrop: `
+                                            rgba(0,0,0,0.0)
+                                            url("https://media1.giphy.com/media/xUA7bheu9ndssiYgHm/giphy.gif")
+                                            top right
+                                            no-repeat
+                                          `
+                            })
+                        }
+                    };
+                };
+            },
             OrderShipped(order){
                 axios.post('api/order/sent',order).then(({data}) => {
                     order = data.order;
@@ -92,9 +121,7 @@
                         'order.id:' + order.id + ' verzonden met verwachte bezorgdatum: ' + order.expectedArrival,
                         'success'
                     );
-                    axios.get('api/order/worker').then(({data}) => {
-                        this.orders = data.orders;
-                    });
+                    this.socket.send(JSON.stringify(order));
                 });
             }
 

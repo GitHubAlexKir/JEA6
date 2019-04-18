@@ -46,21 +46,6 @@
             this.connect();
         },
         methods: {
-            connect() {
-                this.socket = new WebSocket("ws://localhost:8080/webshop/chat");
-                this.socket.onopen = () => {
-                    this.status = "connected";
-                    this.messages.push({
-                            sender: 'server',
-                            received: '',
-                            content: 'Connected to ws://localhost:8080/webshop/chat'
-                    });
-
-                    this.socket.onmessage = ({data}) => {
-                        this.messages.push(JSON.parse(data));
-                    };
-                };
-            },
             disconnect() {
                 this.socket.close();
             },

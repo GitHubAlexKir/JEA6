@@ -2527,27 +2527,6 @@ __webpack_require__.r(__webpack_exports__);
     this.connect();
   },
   methods: {
-    connect: function connect() {
-      var _this2 = this;
-
-      this.socket = new WebSocket("ws://localhost:8080/webshop/chat");
-
-      this.socket.onopen = function () {
-        _this2.status = "connected";
-
-        _this2.messages.push({
-          sender: 'server',
-          received: '',
-          content: 'Connected to ws://localhost:8080/webshop/chat'
-        });
-
-        _this2.socket.onmessage = function (_ref2) {
-          var data = _ref2.data;
-
-          _this2.messages.push(JSON.parse(data));
-        };
-      };
-    },
     disconnect: function disconnect() {
       this.socket.close();
     },
@@ -3448,7 +3427,9 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       user: {},
-      orders: []
+      orders: [],
+      loading: true,
+      wrong: false
     };
   },
   created: function created() {
@@ -3457,26 +3438,48 @@ __webpack_require__.r(__webpack_exports__);
     _axios__WEBPACK_IMPORTED_MODULE_0__["default"].get('api/jwt/user').then(function (_ref) {
       var data = _ref.data;
       _this.user = data;
-    });
-    _axios__WEBPACK_IMPORTED_MODULE_0__["default"].get('api/order/worker').then(function (_ref2) {
-      var data = _ref2.data;
-      _this.orders = data.orders;
-    });
+    }); //axios.get('api/order/worker').then(({data}) => {
+    //    this.orders = data.orders;
+    //});
+
+    this.connect();
   },
   methods: {
-    OrderShipped: function OrderShipped(order) {
+    connect: function connect() {
       var _this2 = this;
+
+      this.socket = new WebSocket("ws://localhost:8080/webshop/worker");
+
+      this.socket.onopen = function () {
+        _this2.socket.onmessage = function (_ref2) {
+          var data = _ref2.data;
+          _this2.orders = JSON.parse(data).orders;
+
+          if (_this2.loading) {
+            _this2.loading = false;
+          } else {
+            _this2.$swal.fire({
+              // position: 'top-end',
+              //type: 'success',
+              title: 'Nieuwe update binnengekomen',
+              //showConfirmButton: false,
+              timer: 1000,
+              backdrop: "\n                                        rgba(0,0,0,0.0)\n                                        url(\"https://media1.giphy.com/media/xUA7bheu9ndssiYgHm/giphy.gif\")\n                                        top right\n                                        no-repeat\n                                      "
+            });
+          }
+        };
+      };
+    },
+    OrderShipped: function OrderShipped(order) {
+      var _this3 = this;
 
       _axios__WEBPACK_IMPORTED_MODULE_0__["default"].post('api/order/sent', order).then(function (_ref3) {
         var data = _ref3.data;
         order = data.order;
 
-        _this2.$swal.fire('Updated!', 'order.id:' + order.id + ' verzonden met verwachte bezorgdatum: ' + order.expectedArrival, 'success');
+        _this3.$swal.fire('Updated!', 'order.id:' + order.id + ' verzonden met verwachte bezorgdatum: ' + order.expectedArrival, 'success');
 
-        _axios__WEBPACK_IMPORTED_MODULE_0__["default"].get('api/order/worker').then(function (_ref4) {
-          var data = _ref4.data;
-          _this2.orders = data.orders;
-        });
+        _this3.socket.send(JSON.stringify(order));
       });
     }
   }
@@ -45557,140 +45560,142 @@ var render = function() {
       _vm._v(" "),
       _c("div", { staticClass: "container" }, [
         _c("div", { staticClass: "row" }, [
-          _c(
-            "div",
-            { staticClass: "col-md-12" },
-            _vm._l(_vm.orders, function(order) {
-              return _c("div", { staticClass: "col-sm-6 col-md-4" }, [
-                _c("div", { staticClass: "thumbnail" }, [
-                  _c("h4", { staticClass: "text-center" }, [
-                    _c("span", { staticClass: "label label-info" }, [
-                      _vm._v(_vm._s(order.id))
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "caption" },
-                    [
-                      _vm._l(order.items, function(item) {
-                        return _c("div", { staticClass: "row" }, [
-                          _c("div", { staticClass: "col-md-6 col-xs-6" }, [
-                            _c("h3", [_vm._v(_vm._s(item.productName))])
-                          ]),
-                          _vm._v(" "),
-                          _c(
-                            "div",
-                            { staticClass: "col-md-6 col-xs-6 price" },
-                            [
-                              _c("h3", [
-                                _c("label", [
-                                  _c("span", [_vm._v("€")]),
-                                  _vm._v(_vm._s(item.price))
-                                ])
-                              ])
-                            ]
-                          ),
-                          _vm._v(" "),
-                          _c("p", [_vm._v(_vm._s(item.productNumber))])
+          _vm.orders.length > 0
+            ? _c(
+                "div",
+                { staticClass: "col-md-12" },
+                _vm._l(_vm.orders, function(order) {
+                  return _c("div", { staticClass: "col-sm-6 col-md-4" }, [
+                    _c("div", { staticClass: "thumbnail" }, [
+                      _c("h4", { staticClass: "text-center" }, [
+                        _c("span", { staticClass: "label label-info" }, [
+                          _vm._v(_vm._s(order.id))
                         ])
-                      }),
+                      ]),
                       _vm._v(" "),
-                      _c("p")
-                    ],
-                    2
-                  ),
-                  _vm._v(" "),
-                  _vm._m(1, true),
-                  _vm._v(" "),
-                  _c("h6", [
-                    _c("b", [_vm._v(" Ontvanger: ")]),
-                    _vm._v(
-                      _vm._s(order.addressInformation.addressee) +
-                        "\n                            "
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("h6", [
-                    _c("b", [_vm._v(" Adres: ")]),
-                    _vm._v(
-                      _vm._s(order.addressInformation.address) +
-                        "\n                            "
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("h6", [
-                    _c("b", [_vm._v(" Postcode: ")]),
-                    _vm._v(
-                      _vm._s(order.addressInformation.zip) +
-                        "\n                            "
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("h6", [
-                    _c("b", [_vm._v(" Plaats: ")]),
-                    _vm._v(
-                      _vm._s(order.addressInformation.city) +
-                        "\n                            "
-                    )
-                  ]),
-                  _vm._v(" "),
-                  order.dispatched
-                    ? _c("div", [
-                        _vm._m(2, true),
-                        _vm._v(" "),
-                        _c("p", [
-                          _vm._v(
-                            "Verwachte bezorgdatum: " +
-                              _vm._s(order.expectedArrival)
-                          )
-                        ])
-                      ])
-                    : _c("div", [_vm._m(3, true)]),
-                  _vm._v(" "),
-                  order.paid
-                    ? _c("div", [
-                        _vm._m(4, true),
-                        _vm._v(" "),
-                        _c(
-                          "a",
-                          {
-                            staticClass: "btn btn-success text-center",
-                            on: {
-                              click: function($event) {
-                                return _vm.getInvoice(order.id)
-                              }
-                            }
-                          },
-                          [_vm._v("Download PDF")]
-                        )
-                      ])
-                    : _c(
+                      _c(
                         "div",
+                        { staticClass: "caption" },
                         [
-                          _vm._m(5, true),
+                          _vm._l(order.items, function(item) {
+                            return _c("div", { staticClass: "row" }, [
+                              _c("div", { staticClass: "col-md-6 col-xs-6" }, [
+                                _c("h3", [_vm._v(_vm._s(item.productName))])
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                { staticClass: "col-md-6 col-xs-6 price" },
+                                [
+                                  _c("h3", [
+                                    _c("label", [
+                                      _c("span", [_vm._v("€")]),
+                                      _vm._v(_vm._s(item.price))
+                                    ])
+                                  ])
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("p", [_vm._v(_vm._s(item.productNumber))])
+                            ])
+                          }),
                           _vm._v(" "),
-                          _c("PayPal", {
-                            attrs: {
-                              amount: "10.00",
-                              currency: "USD",
-                              client: _vm.credentials,
-                              "invoice-number": order.id,
-                              env: "sandbox"
-                            },
-                            on: {
-                              "payment-cancelled": _vm.paymentCancelled,
-                              "payment-completed": _vm.paymentAuthorized
-                            }
-                          })
+                          _c("p")
                         ],
-                        1
-                      )
-                ])
-              ])
-            }),
-            0
-          )
+                        2
+                      ),
+                      _vm._v(" "),
+                      _vm._m(1, true),
+                      _vm._v(" "),
+                      _c("h6", [
+                        _c("b", [_vm._v(" Ontvanger: ")]),
+                        _vm._v(
+                          _vm._s(order.addressInformation.addressee) +
+                            "\n                            "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("h6", [
+                        _c("b", [_vm._v(" Adres: ")]),
+                        _vm._v(
+                          _vm._s(order.addressInformation.address) +
+                            "\n                            "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("h6", [
+                        _c("b", [_vm._v(" Postcode: ")]),
+                        _vm._v(
+                          _vm._s(order.addressInformation.zip) +
+                            "\n                            "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("h6", [
+                        _c("b", [_vm._v(" Plaats: ")]),
+                        _vm._v(
+                          _vm._s(order.addressInformation.city) +
+                            "\n                            "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      order.dispatched
+                        ? _c("div", [
+                            _vm._m(2, true),
+                            _vm._v(" "),
+                            _c("p", [
+                              _vm._v(
+                                "Verwachte bezorgdatum: " +
+                                  _vm._s(order.expectedArrival)
+                              )
+                            ])
+                          ])
+                        : _c("div", [_vm._m(3, true)]),
+                      _vm._v(" "),
+                      order.paid
+                        ? _c("div", [
+                            _vm._m(4, true),
+                            _vm._v(" "),
+                            _c(
+                              "a",
+                              {
+                                staticClass: "btn btn-success text-center",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.getInvoice(order.id)
+                                  }
+                                }
+                              },
+                              [_vm._v("Download PDF")]
+                            )
+                          ])
+                        : _c(
+                            "div",
+                            [
+                              _vm._m(5, true),
+                              _vm._v(" "),
+                              _c("PayPal", {
+                                attrs: {
+                                  amount: "10.00",
+                                  currency: "USD",
+                                  client: _vm.credentials,
+                                  "invoice-number": order.id,
+                                  env: "sandbox"
+                                },
+                                on: {
+                                  "payment-cancelled": _vm.paymentCancelled,
+                                  "payment-completed": _vm.paymentAuthorized
+                                }
+                              })
+                            ],
+                            1
+                          )
+                    ])
+                  ])
+                }),
+                0
+              )
+            : _vm._e()
         ])
       ])
     ],
@@ -45794,140 +45799,148 @@ var render = function() {
                 : _vm._e(),
               _vm._v(" "),
               _vm._l(_vm.orders, function(order) {
-                return _c("div", { staticClass: "col-sm-6 col-md-4" }, [
-                  _c("div", { staticClass: "thumbnail" }, [
-                    _c("h4", { staticClass: "text-center" }, [
-                      _c("span", { staticClass: "label label-info" }, [
-                        _vm._v(_vm._s(order.id))
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      { staticClass: "caption" },
-                      [
-                        _vm._l(order.items, function(item) {
-                          return _c("div", { staticClass: "row" }, [
-                            _c("div", { staticClass: "col-md-6 col-xs-6" }, [
-                              _c("h3", [_vm._v(_vm._s(item.productName))])
-                            ]),
-                            _vm._v(" "),
-                            _c("p", [_vm._v(_vm._s(item.productNumber))]),
-                            _vm._v(" "),
-                            _c("p", [
-                              _c("b", [_vm._v("Locatie:")]),
-                              _vm._v(_vm._s(item.warehouseLocation))
-                            ])
+                return _vm.orders.length > 0
+                  ? _c("div", { staticClass: "col-sm-6 col-md-4" }, [
+                      _c("div", { staticClass: "thumbnail" }, [
+                        _c("h4", { staticClass: "text-center" }, [
+                          _c("span", { staticClass: "label label-info" }, [
+                            _vm._v(_vm._s(order.id))
                           ])
-                        }),
+                        ]),
                         _vm._v(" "),
-                        _c("p")
-                      ],
-                      2
-                    ),
-                    _vm._v(" "),
-                    _vm._m(1, true),
-                    _vm._v(" "),
-                    _c("h6", [
-                      _c("b", [_vm._v(" Ontvanger: ")]),
-                      _vm._v(
-                        _vm._s(order.addressInformation.addressee) +
-                          "\n                            "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("h6", [
-                      _c("b", [_vm._v(" Adres: ")]),
-                      _vm._v(
-                        _vm._s(order.addressInformation.address) +
-                          "\n                            "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("h6", [
-                      _c("b", [_vm._v(" Postcode: ")]),
-                      _vm._v(
-                        _vm._s(order.addressInformation.zip) +
-                          "\n                            "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("h6", [
-                      _c("b", [_vm._v(" Plaats: ")]),
-                      _vm._v(
-                        _vm._s(order.addressInformation.city) +
-                          "\n                            "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticStyle: {
-                          display: "flex",
-                          "justify-content": "center"
-                        }
-                      },
-                      [
-                        order.paid
-                          ? _c("div", [
-                              _vm._m(2, true),
-                              _vm._v(" "),
-                              _c(
-                                "a",
-                                {
-                                  staticClass: "btn btn-success text-center",
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.OrderShipped(order)
-                                    }
-                                  }
-                                },
-                                [_vm._v("Download PDF")]
-                              )
-                            ])
-                          : _c("div", [_vm._m(3, true)]),
-                        _vm._v(" "),
-                        order.dispatched
-                          ? _c(
-                              "div",
-                              {
-                                staticStyle: {
-                                  display: "flex",
-                                  "flex-direction": "column",
-                                  "align-items": "center"
-                                }
-                              },
-                              [
-                                _vm._m(4, true),
+                        _c(
+                          "div",
+                          { staticClass: "caption" },
+                          [
+                            _vm._l(order.items, function(item) {
+                              return _c("div", { staticClass: "row" }, [
+                                _c(
+                                  "div",
+                                  { staticClass: "col-md-6 col-xs-6" },
+                                  [_c("h3", [_vm._v(_vm._s(item.productName))])]
+                                ),
                                 _vm._v(" "),
-                                _c("b", [_vm._v("Verwachte berzorgdatum: ")]),
-                                _vm._v(
-                                  _vm._s(order.expectedArrival) +
-                                    "\n                                "
-                                )
-                              ]
-                            )
-                          : _c("div", [
-                              _vm._m(5, true),
-                              _vm._v(" "),
-                              _c(
-                                "a",
-                                {
-                                  staticClass: "btn btn-success text-center",
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.OrderShipped(order)
+                                _c("p", [_vm._v(_vm._s(item.productNumber))]),
+                                _vm._v(" "),
+                                _c("p", [
+                                  _c("b", [_vm._v("Locatie:")]),
+                                  _vm._v(_vm._s(item.warehouseLocation))
+                                ])
+                              ])
+                            }),
+                            _vm._v(" "),
+                            _c("p")
+                          ],
+                          2
+                        ),
+                        _vm._v(" "),
+                        _vm._m(1, true),
+                        _vm._v(" "),
+                        _c("h6", [
+                          _c("b", [_vm._v(" Ontvanger: ")]),
+                          _vm._v(
+                            _vm._s(order.addressInformation.addressee) +
+                              "\n                            "
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("h6", [
+                          _c("b", [_vm._v(" Adres: ")]),
+                          _vm._v(
+                            _vm._s(order.addressInformation.address) +
+                              "\n                            "
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("h6", [
+                          _c("b", [_vm._v(" Postcode: ")]),
+                          _vm._v(
+                            _vm._s(order.addressInformation.zip) +
+                              "\n                            "
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("h6", [
+                          _c("b", [_vm._v(" Plaats: ")]),
+                          _vm._v(
+                            _vm._s(order.addressInformation.city) +
+                              "\n                            "
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticStyle: {
+                              display: "flex",
+                              "justify-content": "center"
+                            }
+                          },
+                          [
+                            order.paid
+                              ? _c("div", [
+                                  _vm._m(2, true),
+                                  _vm._v(" "),
+                                  _c(
+                                    "a",
+                                    {
+                                      staticClass:
+                                        "btn btn-success text-center",
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.OrderShipped(order)
+                                        }
+                                      }
+                                    },
+                                    [_vm._v("Download PDF")]
+                                  )
+                                ])
+                              : _c("div", [_vm._m(3, true)]),
+                            _vm._v(" "),
+                            order.dispatched
+                              ? _c(
+                                  "div",
+                                  {
+                                    staticStyle: {
+                                      display: "flex",
+                                      "flex-direction": "column",
+                                      "align-items": "center"
                                     }
-                                  }
-                                },
-                                [_vm._v("Zet order op verzonden")]
-                              )
-                            ])
-                      ]
-                    )
-                  ])
-                ])
+                                  },
+                                  [
+                                    _vm._m(4, true),
+                                    _vm._v(" "),
+                                    _c("b", [
+                                      _vm._v("Verwachte berzorgdatum: ")
+                                    ]),
+                                    _vm._v(
+                                      _vm._s(order.expectedArrival) +
+                                        "\n                                "
+                                    )
+                                  ]
+                                )
+                              : _c("div", [
+                                  _vm._m(5, true),
+                                  _vm._v(" "),
+                                  _c(
+                                    "a",
+                                    {
+                                      staticClass:
+                                        "btn btn-success text-center",
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.OrderShipped(order)
+                                        }
+                                      }
+                                    },
+                                    [_vm._v("Zet order op verzonden")]
+                                  )
+                                ])
+                          ]
+                        )
+                      ])
+                    ])
+                  : _vm._e()
               })
             ],
             2
@@ -46979,7 +46992,7 @@ babel_runtime_core_js_object_keys__WEBPACK_IMPORTED_MODULE_3___default()(compone
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /*!
-  * vue-router v3.0.6
+  * vue-router v3.0.3
   * (c) 2019 Evan You
   * @license MIT
   */
@@ -47038,14 +47051,11 @@ var View = {
     var depth = 0;
     var inactive = false;
     while (parent && parent._routerRoot !== parent) {
-      var vnodeData = parent.$vnode && parent.$vnode.data;
-      if (vnodeData) {
-        if (vnodeData.routerView) {
-          depth++;
-        }
-        if (vnodeData.keepAlive && parent._inactive) {
-          inactive = true;
-        }
+      if (parent.$vnode && parent.$vnode.data.routerView) {
+        depth++;
+      }
+      if (parent._inactive) {
+        inactive = true;
       }
       parent = parent.$parent;
     }
@@ -47082,17 +47092,6 @@ var View = {
     // in case the same component instance is reused across different routes
     ;(data.hook || (data.hook = {})).prepatch = function (_, vnode) {
       matched.instances[name] = vnode.componentInstance;
-    };
-
-    // register instance in init hook
-    // in case kept-alive component be actived when routes changed
-    data.hook.init = function (vnode) {
-      if (vnode.data.keepAlive &&
-        vnode.componentInstance &&
-        vnode.componentInstance !== matched.instances[name]
-      ) {
-        matched.instances[name] = vnode.componentInstance;
-      }
     };
 
     // resolve props
@@ -49329,23 +49328,7 @@ function getHash () {
   // consistent across browsers - Firefox will pre-decode it!
   var href = window.location.href;
   var index = href.indexOf('#');
-  // empty path
-  if (index < 0) { return '' }
-
-  href = href.slice(index + 1);
-  // decode the hash but not the search or hash
-  // as search(query) is already decoded
-  // https://github.com/vuejs/vue-router/issues/2708
-  var searchIndex = href.indexOf('?');
-  if (searchIndex < 0) {
-    var hashIndex = href.indexOf('#');
-    if (hashIndex > -1) { href = decodeURI(href.slice(0, hashIndex)) + href.slice(hashIndex); }
-    else { href = decodeURI(href); }
-  } else {
-    if (searchIndex > -1) { href = decodeURI(href.slice(0, searchIndex)) + href.slice(searchIndex); }
-  }
-
-  return href
+  return index === -1 ? '' : decodeURI(href.slice(index + 1))
 }
 
 function getUrl (path) {
@@ -49496,19 +49479,7 @@ VueRouter.prototype.init = function init (app /* Vue component instance */) {
 
   this.apps.push(app);
 
-  // set up app destroyed handler
-  // https://github.com/vuejs/vue-router/issues/2639
-  app.$once('hook:destroyed', function () {
-    // clean out app from this.apps array once destroyed
-    var index = this$1.apps.indexOf(app);
-    if (index > -1) { this$1.apps.splice(index, 1); }
-    // ensure we still have a main app or null if no apps
-    // we do not release the router so it can be reused
-    if (this$1.app === app) { this$1.app = this$1.apps[0] || null; }
-  });
-
-  // main app previously initialized
-  // return as we don't need to set up new history listener
+  // main app already initialized.
   if (this.app) {
     return
   }
@@ -49642,7 +49613,7 @@ function createHref (base, fullPath, mode) {
 }
 
 VueRouter.install = install;
-VueRouter.version = '3.0.6';
+VueRouter.version = '3.0.3';
 
 if (inBrowser && window.Vue) {
   window.Vue.use(VueRouter);

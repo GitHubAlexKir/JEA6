@@ -9,7 +9,7 @@
         </div>
             <div class="container">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div v-if="orders.length > 0" class="col-md-12">
                         <div v-for="order in orders" class="col-sm-6 col-md-4">
                             <div class="thumbnail">
                                 <h4 class="text-center"><span class="label label-info">{{order.id}}</span></h4>
