@@ -50,6 +50,7 @@
                                 </div>
                                 <div v-if="order.paid">
                                     <h4 class="text-center"><span class="label label-success">Betaald</span></h4>
+                                    <a @click="getInvoice(order.id)" class="btn btn-success text-center">Download PDF</a>
                                 </div>
                                 <div v-else>
                                     <h4 class="text-center"><span class="label label-danger">Nog niet betaald</span></h4>
@@ -116,6 +117,15 @@
                     axios.get('api/order').then(({data}) => {
                         this.orders = data.orders;
                     });
+                });
+            },
+            getInvoice(orderId){
+                axios.get('api/invoice/pdf/' + orderId).then(({data}) => {
+                    //this.orders = data.orders;
+                    let blob = new Blob([data], { type: 'text/plain' }),
+                        url = window.URL.createObjectURL(blob)
+
+                    window.open(url)
                 });
             }
         }

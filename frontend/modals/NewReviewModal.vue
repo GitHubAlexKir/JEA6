@@ -17,7 +17,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="content" class="col-md-4 col-form-label text-md-right">Voorraad</label>
+                            <label for="content" class="col-md-4 col-form-label text-md-right">Beschrijving</label>
                             <div class="col-md-6">
                                 <input type="text" id="content" class="form-control" v-model="review.content" name="content" required>
                             </div>

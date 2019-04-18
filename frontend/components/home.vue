@@ -11,7 +11,7 @@
         </div>
         <div class="container">
         <div class="flex flex-col mt-6">
-            <div class="flex justify-end">
+            <div v-if="admin" class="flex justify-end">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#itemModal">
                     Maak item aan.
                 </button>
@@ -72,7 +72,13 @@
                                                     <h4><b>Waardering:</b> {{review.appreciation}}/5 sterren</h4>
                                                     <h4><b>Beschrijving:</b></h4>
                                                     <h4> {{review.content}}</h4>
+                                                    <div v-if="admin" class="flex justify-end">
+                                                    <a @click="deleteReview(item,review)" class="btn btn-danger">
+                                                        Verwijder review.
+                                                    </a>
                                                 </div>
+                                                </div>
+
                                             </div>
                                             <div v-else>
                                                 <h4>Heeft nog geen waarderingen.</h4>
@@ -119,18 +125,32 @@
         data() {
             return {
                 user:{},
-                items:[]
+                items:[],
+                admin: false
             }
         },
         created() {
             axios.get('api/jwt/user').then(({data}) => {
                 this.user = data;
+                console.log(this.user);
+                this.admin = this.isAdmin();
             });
             axios.get('api/item').then(({data}) => {
                 this.items = data.items;
             });
         },
         methods: {
+            isAdmin(){
+                let isAdmin = false;
+                this.user.privileges.forEach((privilege) => {
+                    if (privilege === 'Owner') {
+                        isAdmin = true;
+                    }
+                });
+
+                return isAdmin;
+
+            },
             addToCart(item){
                 item.stock--;
                     this.$refs.navbar.addToCart(item);
@@ -148,7 +168,17 @@
             },
             setItem(item){
                 this.$refs.reviewmodal.setItem(item);
+            },
+            deleteReview(item,review){
+                axios.post('api/item/review/remove/' + item.id,review).then(({data}) => {
+                    this.$swal.fire(
+                        'Verwijderd!',
+                        review.id + ' verwijderd.',
+                        'success'
+                    );
+                    location.reload();
+                });
             }
-        }
+        },
     }
 </script>

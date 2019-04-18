@@ -64,11 +64,10 @@ public class Invoice implements Serializable {
     }
     @Override
     public String toString() {
-        return "Invoice{" +
-                "id=" + id +
-                ", orderId=" + orderId +
-                ", transaction_time=" + transaction_time +
-                ", total=" + total +
-                '}';
+        return "Invoice\n" +
+                "id=" + id + "\n" +
+                "orderId=" + orderId + "\n" +
+                "transaction_time=" + transaction_time + "\n" +
+                "total=" + total;
     }
 }

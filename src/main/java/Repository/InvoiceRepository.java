@@ -36,4 +36,9 @@ public class InvoiceRepository {
    }
 
 
+    public Invoice findWithOrderId(long id) {
+        return em.createQuery("SELECT i FROM Invoice i where i.orderId = :orderId", Invoice.class)
+                .setParameter("orderId", id)
+                .getSingleResult();
+    }
 }

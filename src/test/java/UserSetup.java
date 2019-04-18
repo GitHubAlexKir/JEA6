@@ -7,22 +7,24 @@ import static io.restassured.RestAssured.given;
 
 public class UserSetup {
     private static String userEmail = "Alex@RestAssured.com";
-    private static String userPassword = "RmUxae9qZwXhhBhVdTkBZEY8KQMsCga49FhhmKxrWX7QeRdEcd";
+    private static String password = "RmUxae9qZwXhhBhVdTkBZEY8KQMsCga49FhhmKxrWX7QeRdEcd";
     private static String ownerEmail = "Owner@RestAssured.com";
-    private static String ownerPassword = "RmUxae9qZwXhhBhVdTkBZEY8KQMsCga49FhhmKxrWX7QeRdEcd";
+    private static String workerEmail = "Worker@RestAssured.com";
     private static String token;
 
     public UserSetup(String specialUserEmail,String specialUserPassword) {
         userEmail = specialUserEmail;
-        userPassword = specialUserPassword;
+        password = specialUserPassword;
     }
 
     public static String getToken(){
         if (!login()){
             registerCustomer();
             registerAdminWithoutRole();
+            registerWorkerWithoutRole();
             login();
         }
+        registerWorkerWithoutRole();
         return token;
     }
     public static String getOwnerToken(){
@@ -38,8 +40,8 @@ public class UserSetup {
         addressInformationDTO.setZip("4444XX");
         UserDTO userDTO = new UserDTO();
         userDTO.setEmail(userEmail);
-        userDTO.setPassword1(userPassword);
-        userDTO.setPassword2(userPassword);
+        userDTO.setPassword1(password);
+        userDTO.setPassword2(password);
         userDTO.setFirstName("Test");
         userDTO.setLastName("User");
         userDTO.setAddressInformationDTO(addressInformationDTO);
@@ -59,8 +61,29 @@ public class UserSetup {
         addressInformationDTO.setZip("4444XX");
         UserDTO userDTO = new UserDTO();
         userDTO.setEmail(ownerEmail);
-        userDTO.setPassword1(ownerPassword);
-        userDTO.setPassword2(ownerPassword);
+        userDTO.setPassword1(password);
+        userDTO.setPassword2(password);
+        userDTO.setFirstName("Test");
+        userDTO.setLastName("ADMIN");
+        userDTO.setAddressInformationDTO(addressInformationDTO);
+        given().contentType("application/json")
+                .body(userDTO)
+                .when().post("/jwt/register")
+                .then().statusCode(200);
+
+    }
+    private static void registerWorkerWithoutRole() {
+        System.out.println("Creating Worker account with email " + userEmail);
+        System.out.println("DONT FORGET TO CHANGE ROLE IN DB");
+        AddressInformationDTO addressInformationDTO = new AddressInformationDTO();
+        addressInformationDTO.setAddressee("Test WORKER");
+        addressInformationDTO.setAddress("Test Address 15");
+        addressInformationDTO.setCity("TestCity");
+        addressInformationDTO.setZip("4444XX");
+        UserDTO userDTO = new UserDTO();
+        userDTO.setEmail(workerEmail);
+        userDTO.setPassword1(password);
+        userDTO.setPassword2(password);
         userDTO.setFirstName("Test");
         userDTO.setLastName("ADMIN");
         userDTO.setAddressInformationDTO(addressInformationDTO);
@@ -74,7 +97,7 @@ public class UserSetup {
     private static boolean login() {
         UserLogin userLogin = new UserLogin();
         userLogin.setEmail(userEmail);
-        userLogin.setPassword(userPassword);
+        userLogin.setPassword(password);
         Response r = given()
                 .contentType("application/json")
                 .body(userLogin)
@@ -91,7 +114,7 @@ public class UserSetup {
     private static void loginAdmin() {
         UserLogin userLogin = new UserLogin();
         userLogin.setEmail(ownerEmail);
-        userLogin.setPassword(ownerPassword);
+        userLogin.setPassword(password);
         Response r = given()
                 .contentType("application/json")
                 .body(userLogin)

@@ -38,19 +38,22 @@
                                 <h6>
                                     <b> Plaats: </b>{{ order.addressInformation.city }}
                                 </h6>
-                                <div v-if="order.paid">
-                                    <h4 class="text-center"><span class="label label-success">Betaald</span></h4>
-                                </div>
-                                <div v-else>
-                                    <h4 class="text-center"><span class="label label-danger">Nog niet betaald</span></h4>
-                                </div>
-                                <div v-if="order.dispatched">
-                                    <h4 class="text-center"><span class="label label-success">Verzonden</span></h4>
-                                    <b>Verwachte berzorgdatum: </b>{{ order.expectedArrival }}
-                                </div>
-                                <div v-else>
-                                    <h4 class="text-center"><span class="label label-danger">Nog niet verzonden</span></h4>
-                                    <a @click="OrderShipped(order)" class="btn btn-success text-center">Zet order op verzonden</a>
+                                <div style="display:flex; justify-content:center;">
+                                    <div v-if="order.paid">
+                                        <h4 class="text-center"><span class="label label-success">Betaald</span></h4>
+                                        <a @click="OrderShipped(order)" class="btn btn-success text-center">Download PDF</a>
+                                    </div>
+                                    <div v-else>
+                                        <h4 class="text-center"><span class="label label-danger">Nog niet betaald</span></h4>
+                                    </div>
+                                    <div style="display:flex; flex-direction: column; align-items:center;" v-if="order.dispatched">
+                                        <h4 class="text-center"><span class="label label-success">Verzonden</span></h4>
+                                        <b>Verwachte berzorgdatum: </b>{{ order.expectedArrival }}
+                                    </div>
+                                    <div v-else>
+                                        <h4 class="text-center"><span class="label label-danger">Nog niet verzonden</span></h4>
+                                        <a @click="OrderShipped(order)" class="btn btn-success text-center">Zet order op verzonden</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -17,7 +17,9 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Path("/item")
@@ -80,8 +82,30 @@ public class ItemController {
         return Response.ok(response.toString(2)).build();
     }
     @POST
+    @Path("/review/remove/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteReview(@PathParam("id") long id, ReviewDTO reviewDTO)
+    {
+        JSONObject response = new JSONObject();
+        Item item = repo.find(id);
+        List<Review> reviews = new ArrayList<>();
+        for (Review rev:item.getReviews()
+             ) {
+            if (rev.getId() != reviewDTO.getId()){
+                reviews.add(rev);
+            }
+        }
+        item.setReviews(reviews);
+        item = repo.update(item);
+        response.put("item",item.toMap());
+        response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/item")));
+        return Response.ok(response.toString(2)).build();
+    }
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @OwnerRoleNeeded
     public Response save(ItemDTO itemDTO)
     {
         JSONObject response = new JSONObject();
