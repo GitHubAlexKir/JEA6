@@ -122,10 +122,11 @@
             getInvoice(orderId){
                 axios.get('api/invoice/pdf/' + orderId).then(({data}) => {
                     //this.orders = data.orders;
-                    let blob = new Blob([data], { type: 'text/plain' }),
-                        url = window.URL.createObjectURL(blob)
-
-                    window.open(url)
+                    let blob = new Blob([data], { type: 'text/plain' });
+                        let link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = 'invoice.txt';
+                    link.click();
                 });
             }
         }

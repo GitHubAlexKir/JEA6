@@ -3350,9 +3350,11 @@ __webpack_require__.r(__webpack_exports__);
         //this.orders = data.orders;
         var blob = new Blob([data], {
           type: 'text/plain'
-        }),
-            url = window.URL.createObjectURL(blob);
-        window.open(url);
+        });
+        var link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = 'invoice.txt';
+        link.click();
       });
     }
   }
