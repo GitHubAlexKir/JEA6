@@ -1,10 +1,12 @@
 package controller.order;
 
 import Interceptor.SimpleInterceptor;
+import Repository.InvoiceRepository;
 import Repository.ItemRepository;
 import Repository.OrderRepository;
 import config.JwtTokenUtil;
 import domain.dto.OrderDTO;
+import domain.invoice.Invoice;
 import domain.order.Order;
 import filter.JWTTokenNeeded;
 import filter.WorkerRoleNeeded;
@@ -33,6 +35,8 @@ import java.util.Map;
 public class OrderController {
     @EJB
     OrderRepository repo;
+    @EJB
+    InvoiceRepository invoiceRepo;
     @EJB
     ItemRepository itemRepo;
     private JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
@@ -139,6 +143,11 @@ public class OrderController {
         JSONObject response = new JSONObject();
         response.put("Order_id paid",repo.paid(id));
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/order/" + id)));
+        Invoice invoice = new Invoice();
+        invoice.setOrderId(id);
+        invoice.setTotal(repo.find(id).getTotal());
+        invoice.setTransaction_time(new Date());
+        response.put("invoice",invoiceRepo.save(invoice));
         return Response.ok(response.toString(2)).build();
     }
 

@@ -103,6 +103,15 @@ public class Order implements Serializable {
         this.paid = paid;
     }
 
+    public double getTotal(){
+        double total = 0.00;
+        for (Item i:this.items
+             ) {
+            total+=i.getPrice();
+        }
+        return total;
+    }
+
     public JSONObject toMap() {
         JSONObject response = new JSONObject();
        response.put("id", this.id);
