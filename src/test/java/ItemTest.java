@@ -27,7 +27,7 @@ public class ItemTest {
     public void CreateItemWithoutAdminAccount(){
         ItemDTO itemDTO = new ItemDTO();
         itemDTO.setProductName("Bacardi Carto Blanca 3L");
-        itemDTO.setProductNumber(1234597038506l);
+        itemDTO.setProductNumber(1234597038506L);
         itemDTO.setPrice(299.99);
         itemDTO.setStock(3);
         itemDTO.setWarehouseLocation("A3");
@@ -42,7 +42,7 @@ public class ItemTest {
             RestAssured.requestSpecification = new RequestSpecBuilder().addHeader("Authorization", "Bearer " + UserSetup.getOwnerToken()).build();
             ItemDTO itemDTO = new ItemDTO();
             itemDTO.setProductName("Test Fles 1L");
-            itemDTO.setProductNumber(4827979655038506l);
+            itemDTO.setProductNumber(4827979655038506L);
             itemDTO.setPrice(99.99);
             itemDTO.setStock(50);
             itemDTO.setWarehouseLocation("3C");
@@ -59,11 +59,6 @@ public class ItemTest {
     }
     @Test
     public void getAllItem(){
-        ItemDTO itemDTO = new ItemDTO();
-        itemDTO.setProductName("Bacardi Carto Blanca 3L");
-        itemDTO.setProductNumber(1l);
-        itemDTO.setPrice(299.99);
-        itemDTO.setStock(3);
         Response r = given().when().get("/item").then()
                 .statusCode(200)
                 .extract().response();

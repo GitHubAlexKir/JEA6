@@ -41,7 +41,7 @@ public class ItemController {
 
         JSONObject response = new JSONObject();
         response.put("ping","welkom bij items");
-        response.put("_links",getLinks(URI.create("http://localhost:8080/1/api/item")));
+        response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/item")));
         return Response.ok(response.toString(2)).build();
     }
     @GET

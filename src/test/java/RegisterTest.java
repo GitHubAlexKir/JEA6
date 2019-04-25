@@ -1,4 +1,4 @@
-import domain.authentication.User;
+
 import domain.dto.AddressInformationDTO;
 import domain.dto.UserDTO;
 import io.restassured.RestAssured;
@@ -8,12 +8,14 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.UUID;
+
 import static io.restassured.RestAssured.given;
 
 import static org.junit.Assert.assertEquals;
 
 public class RegisterTest {
-    private static User createdUser = null;
+    private static boolean createdUser = false;
     private static String registerEmail = "RegisterUser@RestAssured.com";
     private static UserDTO userDTO = new UserDTO();
 
@@ -27,7 +29,7 @@ public class RegisterTest {
         addressInformationDTO.setAddress("Test Address 15");
         addressInformationDTO.setCity("TestCity");
         addressInformationDTO.setZip("4444XX");
-        userDTO.setEmail(registerEmail);
+        userDTO.setEmail(UUID.randomUUID().toString() + registerEmail);
         userDTO.setFirstName("Test");
         userDTO.setLastName("User");
         userDTO.setAddressInformationDTO(addressInformationDTO);
@@ -79,6 +81,7 @@ public class RegisterTest {
     }
 
     private Response register(String password,String passwordConfirm){
+        userDTO.setEmail(UUID.randomUUID().toString() + registerEmail);
         userDTO.setPassword1(password);
         userDTO.setPassword2(passwordConfirm);
         Response r = given()
@@ -87,9 +90,8 @@ public class RegisterTest {
                 .when().post("/jwt/register").then()
                 .extract().response();
         if (r.statusCode() == 200) {
-            createdUser = r.getBody().jsonPath().getObject("data", User.class);
+            createdUser = true;
             System.out.println("//created User");
-            System.out.println(createdUser.toString());
         }else {
             System.out.println("//User not created.");
         }
@@ -100,14 +102,14 @@ public class RegisterTest {
     @AfterClass
     public static void cleanUp()
     {
-        if (createdUser != null)
+        if (createdUser)
         {
             RestAssured.requestSpecification = new RequestSpecBuilder().addHeader("Authorization", "Bearer "+UserSetup.getOwnerToken()).build();
             System.out.println("//RegisterTest cleanup");
             given()
-                    .when().delete("/jwt/" + createdUser.getEmail()).then()
+                    .when().delete("/jwt/" + userDTO.getEmail()).then()
                     .statusCode(200);
-            System.out.println("deleted User with email " + createdUser.getEmail());
+            System.out.println("deleted User with email " + userDTO.getEmail());
         }
     }
 }

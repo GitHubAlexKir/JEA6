@@ -1,5 +1,6 @@
 package domain.authentication;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import domain.dto.UserDTO;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.annotations.Cascade;
@@ -8,6 +9,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 @Entity
 @Cacheable(false)
@@ -24,7 +27,7 @@ public class User implements Serializable {
     private String lastName;
     @Column(nullable=false, length=128) //sha-512 + hex
     private String password;
-      
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @Column(nullable=false)
     private Date registeredOn;

@@ -17,8 +17,10 @@ public class UserRepository {
                 .getResultList();
     }
   
-    public void save(User user) {
+    public User save(User user) {
         em.persist(user);
+        em.flush();
+        return user;
     }
   
     public void update(User user) {

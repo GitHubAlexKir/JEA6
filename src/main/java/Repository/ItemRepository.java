@@ -12,7 +12,6 @@ import java.util.List;
 import static javax.transaction.Transactional.TxType.REQUIRED;
 
 @Stateless
-
 @Interceptors(SimpleInterceptor.class)
 public class ItemRepository {
 

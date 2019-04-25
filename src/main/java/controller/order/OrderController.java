@@ -9,6 +9,7 @@ import domain.dto.OrderDTO;
 import domain.invoice.Invoice;
 import domain.order.Order;
 import filter.JWTTokenNeeded;
+import filter.OwnerRoleNeeded;
 import filter.WorkerRoleNeeded;
 import org.json.JSONObject;
 
@@ -122,7 +123,7 @@ public class OrderController {
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/order")));
         return Response.ok(response.toString(2)).build();
     }
-
+    @OwnerRoleNeeded
     @DELETE
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)

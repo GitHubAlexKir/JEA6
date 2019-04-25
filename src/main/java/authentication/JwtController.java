@@ -103,8 +103,7 @@ public class JwtController {
         privileges.add(Privilege.Customer);
         user.setPrivileges(privileges);
         try{
-            repo.save(user);
-            json.setData(user);
+            json.setData(repo.save(user));
             return Response.ok().entity(json).build();
         }catch (Exception e){
             json.setStatus("FAILED");

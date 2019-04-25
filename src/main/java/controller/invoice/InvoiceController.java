@@ -37,7 +37,7 @@ public class InvoiceController {
 
         JSONObject response = new JSONObject();
         response.put("ping","welkom bij invoices");
-        response.put("_links",getLinks(URI.create("http://localhost:8080/1/api/invoice")));
+        response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/invoice")));
         return Response.ok(response.toString(2)).build();
     }
     @GET

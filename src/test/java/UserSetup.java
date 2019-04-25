@@ -17,17 +17,16 @@ public class UserSetup {
         password = specialUserPassword;
     }
 
-    public static String getToken(){
+    static String getToken(){
         if (!login()){
             registerCustomer();
             registerAdminWithoutRole();
             registerWorkerWithoutRole();
             login();
         }
-        registerWorkerWithoutRole();
         return token;
     }
-    public static String getOwnerToken(){
+    static String getOwnerToken(){
         loginAdmin();
         return token;
     }
@@ -73,7 +72,7 @@ public class UserSetup {
 
     }
     private static void registerWorkerWithoutRole() {
-        System.out.println("Creating Worker account with email " + userEmail);
+        System.out.println("Creating Worker account with email " + workerEmail);
         System.out.println("DONT FORGET TO CHANGE ROLE IN DB");
         AddressInformationDTO addressInformationDTO = new AddressInformationDTO();
         addressInformationDTO.setAddressee("Test WORKER");
