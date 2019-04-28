@@ -4,6 +4,8 @@ package service;
 import Interceptor.SimpleInterceptor;
 import Repository.OrderRepository;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.ApplicationScoped;
@@ -25,11 +27,12 @@ import static java.lang.String.format;
 @Interceptors(SimpleInterceptor.class)
 public class WorkerSocket {
     static Set<Session> workers = Collections.synchronizedSet(new HashSet<Session>());
+    private Logger logger = LoggerFactory.getLogger(WorkerSocket.class);
     @EJB
     OrderRepository repo;
     @OnOpen
     public void onOpen(Session session) throws IOException {
-        System.out.println(format("%s started working.", session.getId()));
+        logger.info(format("%s started working.", session.getId()));
         workers.add(session);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("orders",repo.findAll());
@@ -38,17 +41,17 @@ public class WorkerSocket {
 
     @OnError
     public void onError(Throwable error) {
-        /// put model back to pool, log erros
+        logger.error(error.getMessage());
     }
     @OnClose
     public void onClose(Session session) throws IOException, EncodeException {
-        System.out.println(format("%s stopped working.", session.getId()));
+        logger.info(format("%s stopped working.", session.getId()));
         workers.remove(session);
 
     }
     @OnMessage
     public void onMessage(String message, Session session) throws IOException, EncodeException {
-        System.out.println("#Worker order update: " + message);
+        logger.info("#Worker order update: " + message);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("orders",repo.findAll());
         for (Session worker : workers) {
