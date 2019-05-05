@@ -4,13 +4,23 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.Response;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import static io.restassured.RestAssured.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+/**
+ * @author Alex
+ * Order tests voor functionaliteit
+ **/
+@FixMethodOrder(MethodSorters.JVM)
 public class OrderTest {
     private static Order createdOrder = null;
 
+    //Restassured instellen met token
     @BeforeClass
     public static void setup()
     {
@@ -19,8 +29,10 @@ public class OrderTest {
         String token = UserSetup.getToken();
         RestAssured.requestSpecification = new RequestSpecBuilder().addHeader("Authorization", "Bearer "+token).build();
     }
+
+    //Order aanmaken
     @Test
-    public void CreateOrder(){
+    public void ACreateOrder(){
         Response r = given()
                 .contentType("application/json")
                 .body(OrderSetup.createOrderDTO())
@@ -32,7 +44,23 @@ public class OrderTest {
         System.out.println(createdOrder.toString());
         System.out.println();
     }
-
+    //Order betalen
+    @Test
+    public void BPaidOrder(){
+        if (createdOrder != null) {
+            Response r = given()
+                    .contentType("application/json")
+                    .when().post("/order/paid/" +createdOrder.getId()).then()
+                    .statusCode(200)
+                    .extract().response();
+            createdOrder = r.getBody().jsonPath().getObject("order", Order.class);
+            assertTrue(createdOrder.isPaid());
+            System.out.println("//Paid Order");
+            System.out.println(createdOrder.toString());
+            System.out.println();
+        }
+    }
+    // Test voor opruimen  vaan aangemaakte order
     @AfterClass
     public static void cleanUp() {
         if (createdOrder != null) {

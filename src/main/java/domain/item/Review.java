@@ -4,7 +4,10 @@ import domain.dto.ReviewDTO;
 
 import javax.persistence.*;
 import java.io.Serializable;
-
+/**
+ * @author Alex
+ * Review entity
+ **/
 @Entity
 public class Review implements Serializable {
     @Id
@@ -26,7 +29,7 @@ public class Review implements Serializable {
         this.content = reviewDTO.getContent();
 
     }
-
+    //Getters en Setters
     public long getId() {
         return id;
     }

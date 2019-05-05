@@ -3,14 +3,14 @@ package domain.item;
 import domain.dto.ItemDTO;
 import domain.dto.ReviewDTO;
 import org.json.JSONObject;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
+/**
+ * @author Alex
+ * Item entity
+ **/
 @Entity
 public class Item implements Serializable {
     @Id
@@ -29,12 +29,13 @@ public class Item implements Serializable {
     @OneToMany(fetch=FetchType.EAGER,cascade = CascadeType.PERSIST)
     private List<Review> reviews  = new ArrayList<Review>();
 
-
     public Item() {
     }
+
     public Item(ItemDTO itemDTO) {
         try {
             this.id = itemDTO.getId();
+            //ReviewDTOs converteren naar Reviews
             List<Review> convertedReviews = new ArrayList<>();
             for (ReviewDTO reviewDTO:itemDTO.getReviews()
             ) {
@@ -42,7 +43,7 @@ public class Item implements Serializable {
             }
             this.reviews = convertedReviews;
         }catch (NullPointerException e){
-            //New item, dont set id
+            //New item, dont set id and reviews
         }
 
         this.price = itemDTO.getPrice();
@@ -52,7 +53,7 @@ public class Item implements Serializable {
         this.warehouseLocation = itemDTO.getWarehouseLocation();
     }
 
-
+    //Getters en Setters
     public long getId() {
         return id;
     }
@@ -109,7 +110,7 @@ public class Item implements Serializable {
         this.reviews = reviews;
     }
 
-    public JSONObject toMap() {
+    public JSONObject toJSONObject() {
         JSONObject response = new JSONObject();
         response.put("id", this.id);
         response.put("price", this.price);

@@ -13,7 +13,10 @@ import javax.ws.rs.ext.Provider;
 import java.util.ArrayList;
 
 @Provider
-
+/**
+ * @author Alex
+ * JWTToken filter voor controle op token en geldigheid ervan met extra check op role Owner
+ **/
 @OwnerRoleNeeded
 @Priority(Priorities.AUTHENTICATION)
 public class OwnerRoleNeededFilter implements ContainerRequestFilter {
@@ -27,23 +30,16 @@ public class OwnerRoleNeededFilter implements ContainerRequestFilter {
             String token = authorizationHeader.substring("Bearer".length()).trim();
             // Validate the token
             if(jwt.validateToken(token)) {
-                System.out.println("#### valid token : " + token);
-                System.out.println(jwt.getAllClaimsFromToken(token).get("scopes").toString());
-                System.out.println("BEFORE CONTAINS IN SCOPE : OWNERROLENEEDEDFILTER");
                 if (jwt.containsScopeInToken(token,"Owner")){
-                    System.out.println("#### has Role Owner : " + token);
                 }
                 else {
-                    System.out.println("#### Missing role owner : " + token);
                     requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
                 }
             }
             else {
-                System.out.println("#### invalid token : " + token);
                 requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
             }
         } catch (Exception e) {
-            System.out.println("#### no token found" + e.toString());
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
         }
 

@@ -5,7 +5,10 @@ import org.json.JSONObject;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-
+/**
+ * @author Alex
+ * Invoice entity
+ **/
 @Entity
 public class Invoice implements Serializable {
     @Id
@@ -21,7 +24,7 @@ public class Invoice implements Serializable {
 
     public Invoice() {
     }
-
+    //Getters en Setters
     public long getId() {
         return id;
     }
@@ -54,7 +57,7 @@ public class Invoice implements Serializable {
         this.total = total;
     }
 
-    public JSONObject toMap() {
+    public JSONObject toJSONObject() {
         JSONObject response = new JSONObject();
         response.put("id", this.id);
         response.put("orderId", this.orderId);

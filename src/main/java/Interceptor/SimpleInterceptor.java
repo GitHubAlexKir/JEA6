@@ -6,7 +6,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
-
+/**
+ * @author Alex
+ * Simpele interceptor met logger
+ **/
 public class SimpleInterceptor {
     @AroundInvoke
     public Object intercept(InvocationContext context) throws Exception {

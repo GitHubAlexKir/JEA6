@@ -1,5 +1,8 @@
 package domain.dto;
-
+/**
+ * @author Alex
+ * AddressinformationDTO class
+ **/
 public class AddressInformationDTO {
     private long id;
     private String addressee;

@@ -1,7 +1,10 @@
 package domain.authentication;
 
 import java.io.Serializable;
-
+/**
+ * @author Alex
+ * User Login class voor inloggen
+ **/
 public class UserLogin implements Serializable {
     private String email;
     private String password;

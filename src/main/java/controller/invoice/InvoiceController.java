@@ -1,12 +1,10 @@
 package controller.invoice;
 
 import Interceptor.SimpleInterceptor;
-import Repository.InvoiceRepository;
+import repository.InvoiceRepository;
 import domain.invoice.Invoice;
 import filter.JWTTokenNeeded;
-import filter.OwnerRoleNeeded;
 import org.json.JSONObject;
-
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
@@ -17,7 +15,10 @@ import java.io.*;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * @author Alex
+ * InvoiceController
+ **/
 @Path("/invoice")
 @Stateless
 @Interceptors(SimpleInterceptor.class)
@@ -30,6 +31,7 @@ public class InvoiceController {
     {
 
     }
+    //ping test
     @GET
     @Path("/ping")
     public Response invoice()
@@ -40,6 +42,7 @@ public class InvoiceController {
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/invoice")));
         return Response.ok(response.toString(2)).build();
     }
+    //Inovice ophalen met Id
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -47,10 +50,11 @@ public class InvoiceController {
     {
         JSONObject response = new JSONObject();
         Invoice invoice = repo.findWithOrderId(id);
-        response.put("invoice",invoice.toMap());
+        response.put("invoice",invoice.toJSONObject());
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/invoice/" + invoice.getId())));
         return Response.ok(response.toString(2)).build();
     }
+    //Invoice downloaden(//TODO: PDF teruggeven)
     @GET
     @Path("/pdf/{id}")
     @Produces("text/plain")
@@ -80,7 +84,7 @@ public class InvoiceController {
         return response.build();
     }
 
-
+    //Alle invoices ophalen
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getInvoices()
@@ -92,7 +96,7 @@ public class InvoiceController {
     }
 
 
-
+    //Links meegeven bij json response
     private Map<String, URI> getLinks(URI self)
     {
         Map<String, URI> links = new HashMap<>();

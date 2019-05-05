@@ -1,7 +1,10 @@
 package domain.dto;
 
 import java.util.List;
-
+/**
+ * @author Alex
+ * OrderDTO class
+ **/
 public class OrderDTO {
     private long id;
     private String userEmail;

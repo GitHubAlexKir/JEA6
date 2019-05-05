@@ -1,7 +1,7 @@
 package authentication;
 
 import Interceptor.SimpleInterceptor;
-import Repository.UserRepository;
+import repository.UserRepository;
 import config.JwtTokenUtil;
 import domain.authentication.Privilege;
 import domain.dto.UserDTO;
@@ -25,7 +25,10 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
-
+/**
+ * @author Alex
+ * JWTController voor authenticatie
+ **/
 @Path("jwt")
 @Stateless
 @Interceptors(SimpleInterceptor.class)
@@ -35,7 +38,7 @@ public class JwtController {
 
     @EJB
     private UserRepository repo;
-
+    //inloggen
     @POST
     @Path("/login")
     public Response authenticateUser(UserLogin userLogin,
@@ -63,6 +66,7 @@ public class JwtController {
         }
 
     }
+    //User verwijderen met email(en Owner role check)
     @DELETE
     @Path("/{email}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -74,6 +78,7 @@ public class JwtController {
         repo.remove(userToDelete);
         return Response.ok().entity(true).build();
     }
+    //Registreren
     @POST
     @Path("/register")
     public Response registerUser(UserDTO newUser,
@@ -113,7 +118,7 @@ public class JwtController {
 
     }
 
-
+    //Ingelogde gebruiker ophalen d.m.v. JWT token in header
     @GET
     @Path("user")
     public Response getUser(@Context HttpServletRequest req)
@@ -126,6 +131,7 @@ public class JwtController {
         user.setPassword(null);
         return Response.ok().entity(user).build();
     }
+    //Wachtwoord validatie check
     private JsonResponse isValid(String passwordhere,  JsonResponse jsonResponse) {
 
         Pattern UpperCasePatten = Pattern.compile("[A-Z ]");
@@ -144,9 +150,7 @@ public class JwtController {
         if (!digitCasePatten.matcher(passwordhere).find()) {
             jsonResponse.setErrorMsg(jsonResponse.getErrorMsg() + "Wachtwoord moet minimaal één cijfer hebben\n");
         }
-
         return jsonResponse;
-
     }
 
 }

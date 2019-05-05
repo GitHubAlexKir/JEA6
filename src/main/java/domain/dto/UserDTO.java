@@ -1,7 +1,8 @@
 package domain.dto;
-
-import domain.authentication.AddressInformation;
-
+/**
+ * @author Alex
+ * UserDTO class
+ **/
 public class UserDTO {
  
     private String email;

@@ -1,9 +1,9 @@
 package controller.order;
 
 import Interceptor.SimpleInterceptor;
-import Repository.InvoiceRepository;
-import Repository.ItemRepository;
-import Repository.OrderRepository;
+import repository.InvoiceRepository;
+import repository.ItemRepository;
+import repository.OrderRepository;
 import config.JwtTokenUtil;
 import domain.dto.OrderDTO;
 import domain.invoice.Invoice;
@@ -12,7 +12,6 @@ import filter.JWTTokenNeeded;
 import filter.OwnerRoleNeeded;
 import filter.WorkerRoleNeeded;
 import org.json.JSONObject;
-
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
@@ -28,7 +27,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * @author Alex
+ * OrderController
+ **/
 @Path("/order")
 @Stateless
 @Interceptors(SimpleInterceptor.class)
@@ -40,11 +42,13 @@ public class OrderController {
     InvoiceRepository invoiceRepo;
     @EJB
     ItemRepository itemRepo;
+
     private JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
     public OrderController()
     {
 
     }
+    //Ping test
     @GET
     @Path("/ping")
     public Response order()
@@ -55,6 +59,7 @@ public class OrderController {
         response.put("_links",getLinks(URI.create("http://localhost:8080/1/api/order")));
         return Response.ok(response.toString(2)).build();
     }
+    //Order ophalen met Id
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -62,10 +67,11 @@ public class OrderController {
     {
         JSONObject response = new JSONObject();
         Order order = repo.find(id);
-        response.put("order",order.toMap());
+        response.put("order",order.toJSONObject());
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/order/" + order.getId())));
         return Response.ok(response.toString(2)).build();
     }
+    //Orders voor werkers ophalen
     @WorkerRoleNeeded
     @GET
     @Path("/worker")
@@ -77,6 +83,7 @@ public class OrderController {
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/order")));
         return Response.ok(response.toString(2)).build();
     }
+    //Alle Orders ophalen van ingelogde User
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getOrders(@Context HttpServletRequest req)
@@ -90,7 +97,7 @@ public class OrderController {
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/order")));
         return Response.ok(response.toString(2)).build();
     }
-
+    //Order aanmaken
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -100,10 +107,11 @@ public class OrderController {
         Order order = new Order(orderDTO);
         order = repo.create(order);
         itemRepo.removeFromStock(order.getItems());
-        response.put("order",order.toMap());
+        response.put("order",order.toJSONObject());
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/order")));
         return Response.ok(response.toString(2)).build();
     }
+    //Order op versturen zetten
     @POST
     @Path("/sent")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -119,10 +127,11 @@ public class OrderController {
         c.add(Calendar.DATE, 1);  // number of days to add
         order.setExpectedArrival(dateFormat.format(c.getTime()));
         order = repo.update(order);
-        response.put("order",order.toMap());
+        response.put("order",order.toJSONObject());
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/order")));
         return Response.ok(response.toString(2)).build();
     }
+    //Order verwijderen(Alleen Owner mogelijk)
     @OwnerRoleNeeded
     @DELETE
     @Path("{id}")
@@ -135,6 +144,7 @@ public class OrderController {
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/order/" + id)));
         return Response.ok(response.toString(2)).build();
     }
+    //Order op betaald zetten
     @POST
     @Path("/paid/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -142,7 +152,7 @@ public class OrderController {
     public Response paid(@PathParam("id") long id)
     {
         JSONObject response = new JSONObject();
-        response.put("Order_id paid",repo.paid(id));
+        response.put("order",repo.paid(id).toJSONObject());
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/order/" + id)));
         Invoice invoice = new Invoice();
         invoice.setOrderId(id);
@@ -151,7 +161,7 @@ public class OrderController {
         response.put("invoice",invoiceRepo.save(invoice));
         return Response.ok(response.toString(2)).build();
     }
-
+    //Links meegeven bij json response
     private Map<String, URI> getLinks(URI self)
     {
         Map<String, URI> links = new HashMap<>();

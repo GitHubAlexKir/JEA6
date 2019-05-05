@@ -10,7 +10,10 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * @author Alex
+ * Order entity met andere tabelnaam vanwege MySQL syntax
+ **/
 @Entity
 @Table(name = "UserOrder")
 public class Order implements Serializable {
@@ -36,6 +39,7 @@ public class Order implements Serializable {
     public Order(OrderDTO orderDTO) {
         this.userEmail = orderDTO.getUserEmail();
         this.dispatched = orderDTO.isDispatched();
+        //ItemDTOs van OrderDTO converteren naar Items
         List<Item> convertedItems = new ArrayList<>();
         for (ItemDTO itemDTO:orderDTO.getItems()
              ) {
@@ -46,7 +50,7 @@ public class Order implements Serializable {
         this.paid = orderDTO.isPaid();
         this.addressInformation = new AddressInformation(orderDTO.getAddressInformationDTO());
     }
-
+    //Getters en Setters
     public long getId() {
         return id;
     }
@@ -86,7 +90,6 @@ public class Order implements Serializable {
     public void setAddressInformation(AddressInformation addressInformation) {
         this.addressInformation = addressInformation;
     }
-
     public String getExpectedArrival() {
         return expectedArrival;
     }
@@ -103,6 +106,7 @@ public class Order implements Serializable {
         this.paid = paid;
     }
 
+    //Totale bedrag van alle items in order
     public double getTotal(){
         double total = 0.00;
         for (Item i:this.items
@@ -111,19 +115,21 @@ public class Order implements Serializable {
         }
         return total;
     }
-
-    public JSONObject toMap() {
+    // Order converteren naar JSONObject.
+    // dit is vanwege een bug in de verouderde versie van Jersey in glassfish.
+    // Andere oplossing is Gson maar met dit heb je meer controle erover.
+    public JSONObject toJSONObject() {
         JSONObject response = new JSONObject();
        response.put("id", this.id);
         response.put("userEmail", this.userEmail);
         response.put("items",this.items);
         response.put("dispatched", this.dispatched);
-        response.put("addressInformation",this.addressInformation.toMap());
+        response.put("addressInformation",this.addressInformation.toJSONObject());
         response.put("expectedArrival", this.expectedArrival);
         response.put("paid", this.paid);
         return response;
     }
-
+    // toString override voor logging/debugging
     @Override
     public String toString() {
         return "{" +

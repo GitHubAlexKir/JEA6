@@ -3,15 +3,14 @@ package domain.authentication;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import domain.dto.UserDTO;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.hibernate.annotations.Cascade;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
-
+/**
+ * @author Alex
+ * User Entity
+ **/
 @Entity
 @Cacheable(false)
 public class User implements Serializable {
@@ -48,11 +47,6 @@ public class User implements Serializable {
     }
      
     public User(UserDTO user){
-         
-        if (user.getPassword1() == null || user.getPassword1().length() == 0
-                || !user.getPassword1().equals(user.getPassword2()) )
-            throw new RuntimeException("Password 1 and Password 2 have to be equal (typo?)");
-         
         this.email        = user.getEmail();
         this.firstName    = user.getFirstName();
         this.lastName     = user.getLastName();
@@ -60,7 +54,8 @@ public class User implements Serializable {
         this.registeredOn = new Date();
         this.addressInformation = new AddressInformation(user.getAddressInformationDTO() );
     }
- 
+
+    //Getters en Setters
     public String getFirstName() {
         return firstName;
     }

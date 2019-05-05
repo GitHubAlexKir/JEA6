@@ -1,26 +1,17 @@
 package domain.response;
 
 import java.io.Serializable;
-import java.util.Map;
-
+/**
+ * @author Alex
+ * Simpele Object voor json resonses, Idee orgineel van een tuutorial maar aangepast naar wat ik nodig heb.
+ **/
 public class JsonResponse implements Serializable {
-
-    private static final float version = 1.0f;
 
     private String status;
     private String errorMsg;
-    private Map<String, Object> fieldErrors;
     private Object data;
 
     public JsonResponse() {
-    }
-
-    public JsonResponse(String status) {
-        this.status = status;
-    }
-
-    public float getVersion() {
-        return JsonResponse.version;
     }
 
     public String getStatus() {
@@ -37,14 +28,6 @@ public class JsonResponse implements Serializable {
 
     public void setErrorMsg(String errorMsg) {
         this.errorMsg = errorMsg;
-    }
-
-    public Map<String, Object> getFieldErrors() {
-        return fieldErrors;
-    }
-
-    public void setFieldErrors(Map<String, Object> fieldErrors) {
-        this.fieldErrors = fieldErrors;
     }
 
     public Object getData() {

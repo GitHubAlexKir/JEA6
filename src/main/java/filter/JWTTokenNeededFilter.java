@@ -10,28 +10,25 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-
+/**
+ * @author Alex
+ * JWTToken filter voor controle op token en geldigheid ervan
+ **/
 @JWTTokenNeeded
 @Priority(Priorities.AUTHENTICATION)
 public class JWTTokenNeededFilter implements ContainerRequestFilter {
     private JwtTokenUtil  jwt = new JwtTokenUtil();
     @Override
     public void filter(ContainerRequestContext requestContext) {
-        // Get the HTTP Authorization header from the request
         String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-        // Extract the token from the HTTP Authorization header
         try {
             String token = authorizationHeader.substring("Bearer".length()).trim();
-            // Validate the token
             if(jwt.validateToken(token)) {
-                System.out.println("#### valid token : " + token);
             }
             else {
-                System.out.println("#### invalid token : " + token);
                 requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
             }
         } catch (Exception e) {
-            System.out.println("#### no token found");
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
         }
 

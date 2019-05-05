@@ -1,5 +1,8 @@
 package domain.dto;
-
+/**
+ * @author Alex
+ * ReviewDTO class
+ **/
 public class ReviewDTO {
     private long id;
     private String author;

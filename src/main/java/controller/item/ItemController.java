@@ -1,7 +1,7 @@
 package controller.item;
 
 import Interceptor.SimpleInterceptor;
-import Repository.ItemRepository;
+import repository.ItemRepository;
 import domain.dto.ItemDTO;
 import domain.dto.ReviewDTO;
 import domain.item.Item;
@@ -9,7 +9,6 @@ import domain.item.Review;
 import filter.JWTTokenNeeded;
 import filter.OwnerRoleNeeded;
 import org.json.JSONObject;
-
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
@@ -21,7 +20,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * @author Alex
+ * ItemController
+ **/
 @Path("/item")
 @Stateless
 @Interceptors(SimpleInterceptor.class)
@@ -34,6 +36,7 @@ public class ItemController {
     {
 
     }
+    //ping test
     @GET
     @Path("/ping")
     public Response item()
@@ -44,6 +47,7 @@ public class ItemController {
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/item")));
         return Response.ok(response.toString(2)).build();
     }
+    //Item ophalen met Id
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -51,11 +55,11 @@ public class ItemController {
     {
         JSONObject response = new JSONObject();
         Item item = repo.find(id);
-        response.put("item",item.toMap());
+        response.put("item",item.toJSONObject());
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/item/" + item.getId())));
         return Response.ok(response.toString(2)).build();
     }
-
+    //Items ophalen
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getItems()
@@ -65,7 +69,7 @@ public class ItemController {
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/item")));
         return Response.ok(response.toString(2)).build();
     }
-
+    //Review aanmaken met ItemId
     @POST
     @Path("/review/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -77,19 +81,22 @@ public class ItemController {
         Item item = repo.find(id);
         item.getReviews().add(review);
         item = repo.save(item);
-        response.put("item",item.toMap());
+        response.put("item",item.toJSONObject());
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/item")));
         return Response.ok(response.toString(2)).build();
     }
+    //Review verwijderen met ReviewId
     @POST
     @Path("/review/remove/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @OwnerRoleNeeded
     public Response deleteReview(@PathParam("id") long id, ReviewDTO reviewDTO)
     {
         JSONObject response = new JSONObject();
         Item item = repo.find(id);
         List<Review> reviews = new ArrayList<>();
+        //Review om te verwijderen eruit halen
         for (Review rev:item.getReviews()
              ) {
             if (rev.getId() != reviewDTO.getId()){
@@ -98,10 +105,11 @@ public class ItemController {
         }
         item.setReviews(reviews);
         item = repo.update(item);
-        response.put("item",item.toMap());
+        response.put("item",item.toJSONObject());
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/item")));
         return Response.ok(response.toString(2)).build();
     }
+    //Item aanmaken met Owner check
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -111,10 +119,11 @@ public class ItemController {
         JSONObject response = new JSONObject();
         Item item = new Item(itemDTO);
         item = repo.save(item);
-        response.put("item",item.toMap());
+        response.put("item",item.toJSONObject());
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/item")));
         return Response.ok(response.toString(2)).build();
     }
+    //Item updaten
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -123,15 +132,16 @@ public class ItemController {
     {
         JSONObject response = new JSONObject();
         item = repo.update(item);
-        response.put("item",item.toMap());
+        response.put("item",item.toJSONObject());
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/item")));
         return Response.ok(response.toString(2)).build();
     }
-
+    //Item verwijderen
     @DELETE
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @OwnerRoleNeeded
     public Response delete(@PathParam("id") long id)
     {
         JSONObject response = new JSONObject();
@@ -139,7 +149,7 @@ public class ItemController {
         response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/item/" + id)));
         return Response.ok(response.toString(2)).build();
     }
-
+    //Links meegeven bij json response
     private Map<String, URI> getLinks(URI self)
     {
         Map<String, URI> links = new HashMap<>();

@@ -1,4 +1,3 @@
-
 import domain.dto.AddressInformationDTO;
 import domain.dto.UserDTO;
 import io.restassured.RestAssured;
@@ -7,18 +6,20 @@ import io.restassured.response.Response;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
-
 import static org.junit.Assert.assertEquals;
-
+/**
+ * @author Alex
+ * Register tests voor functionaliteit
+ **/
 public class RegisterTest {
     private static boolean createdUser = false;
     private static String registerEmail = "RegisterUser@RestAssured.com";
     private static UserDTO userDTO = new UserDTO();
 
+    //Restassured instellen, userDTO object voor tests aanmaken.
     @BeforeClass
     public static void setup() {
         RestAssured.baseURI = "http://localhost/webshop/api";
@@ -34,12 +35,12 @@ public class RegisterTest {
         userDTO.setLastName("User");
         userDTO.setAddressInformationDTO(addressInformationDTO);
     }
-    // Wachtwoord met Hoofdletter, cijfer en minimaal 12 tekens lang
+    // Test voor wachtwoord met Hoofdletter, cijfer en minimaal 12 tekens lang
     @Test
     public void registerSuccessWithStrongPassword(){
         assertEquals(200, register("Twe1fthChara","Twe1fthChara").statusCode());
     }
-    // Wachtwoord zonder Hoofdletter, cijfer, en minimaal 12 tekens lang.
+    // Test voor wachtwoord zonder Hoofdletter, cijfer, en minimaal 12 tekens lang.
     @Test
     public void registerFailWithWeakPasswordContainingAllErrorResonses(){
         Response r = register("eeeeeeeeeee","eeeeeeeeeee");
@@ -49,7 +50,7 @@ public class RegisterTest {
         responseErrorMsg = responseErrorMsg.replaceAll("[\\n]", "\n");
         assertEquals(expectedErrorMsg,responseErrorMsg);
     }
-    // Wachtwoord zonder Hoofdletter
+    // Test voor wachtwoord zonder Hoofdletter
     @Test
     public void registerFailWithWeakPasswordWithoutCap(){
         Response r = register("twe1fthchara","twe1fthchara");
@@ -59,7 +60,7 @@ public class RegisterTest {
         responseErrorMsg = responseErrorMsg.replaceAll("[\\n]", "\n");
         assertEquals(expectedErrorMsg,responseErrorMsg);
     }
-    // Wachtwoord zonder Cijfer
+    // Test voor wachtwoord zonder Cijfer
     @Test
     public void registerFailWithWeakPasswordWithoutNuber(){
         Response r = register("TwelfthChara","TwelfthChara");
@@ -69,7 +70,7 @@ public class RegisterTest {
         responseErrorMsg = responseErrorMsg.replaceAll("[\\n]", "\n");
         assertEquals(expectedErrorMsg,responseErrorMsg);
     }
-    // Wachtwoord zonder minimaal 12 tekens
+    // Test voor wachtwoord zonder minimaal 12 tekens
     @Test
     public void registerFailWithWeakPasswordWithoutEnoughChar(){
         Response r = register("Twe1fthChar","Twe1fthChar");
@@ -80,6 +81,7 @@ public class RegisterTest {
         assertEquals(expectedErrorMsg,responseErrorMsg);
     }
 
+    //register methode
     private Response register(String password,String passwordConfirm){
         userDTO.setEmail(UUID.randomUUID().toString() + registerEmail);
         userDTO.setPassword1(password);
@@ -99,6 +101,7 @@ public class RegisterTest {
         return r;
     }
 
+    //Cleanup van tests
     @AfterClass
     public static void cleanUp()
     {

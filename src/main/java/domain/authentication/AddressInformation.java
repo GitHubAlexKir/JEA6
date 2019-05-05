@@ -5,7 +5,10 @@ import org.json.JSONObject;
 
 import javax.persistence.*;
 import java.io.Serializable;
-
+/**
+ * @author Alex
+ * AddressInformation class voor gegevens voor verzending
+ **/
 @Entity
 @Cacheable(false)
 public class AddressInformation implements Serializable {
@@ -87,7 +90,7 @@ public class AddressInformation implements Serializable {
                 '}';
     }
 
-    public JSONObject toMap() {
+    public JSONObject toJSONObject() {
         JSONObject response = new JSONObject();
         response.put("id", this.id);
         response.put("addressee",this.addressee);

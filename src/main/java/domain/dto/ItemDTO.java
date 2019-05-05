@@ -1,9 +1,10 @@
 package domain.dto;
 
-
-import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * @author Alex
+ * ItemDTO class
+ **/
 public class ItemDTO {
     private long id;
     private long productNumber;

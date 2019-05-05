@@ -10,10 +10,14 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
-
+/**
+ * @author Alex
+ * Item tests voor functionaliteit
+ **/
 public class ItemTest {
     private static Item createdItem = null;
 
+    //Restassured instellen met token
     @BeforeClass
     public static void setup()
     {
@@ -23,6 +27,7 @@ public class ItemTest {
         RestAssured.requestSpecification = new RequestSpecBuilder().addHeader("Authorization", "Bearer "+token).build();
     }
 
+    //Test voor error op Item aanmaken zonder Owner role
     @Test
     public void CreateItemWithoutAdminAccount(){
         ItemDTO itemDTO = new ItemDTO();
@@ -37,6 +42,7 @@ public class ItemTest {
                 .when().post("/item").then()
                 .statusCode(401);
     }
+    //Test voor item aanmaken met Owner role
     @Test
     public void CreateItemWithAdminAccount(){
             RestAssured.requestSpecification = new RequestSpecBuilder().addHeader("Authorization", "Bearer " + UserSetup.getOwnerToken()).build();
@@ -57,6 +63,7 @@ public class ItemTest {
             System.out.println(createdItem.toString());
             System.out.println();
     }
+    // Test voor alle items ophalen
     @Test
     public void getAllItem(){
         Response r = given().when().get("/item").then()
@@ -71,6 +78,7 @@ public class ItemTest {
         System.out.println();
     }
 
+    // Cleanup: aangemaakte item verwijderen
     @AfterClass
     public static void cleanUp()
     {
