@@ -1,5 +1,6 @@
 package domain.invoice;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.json.JSONObject;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ public class Invoice implements Serializable {
     private long id;
     @Column(name = "order_id",nullable=false, unique = true)
     private long orderId;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @Column(nullable=false)
     private Date transaction_time;

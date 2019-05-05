@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import static io.restassured.RestAssured.*;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -60,7 +59,7 @@ public class OrderTest {
             System.out.println();
         }
     }
-    // Test voor opruimen  vaan aangemaakte order
+    // Test voor opruimen van aangemaakte order
     @AfterClass
     public static void cleanUp() {
         if (createdOrder != null) {

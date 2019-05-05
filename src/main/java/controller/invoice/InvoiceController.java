@@ -36,23 +36,24 @@ public class InvoiceController {
     @Path("/ping")
     public Response invoice()
     {
-
         JSONObject response = new JSONObject();
         response.put("ping","welkom bij invoices");
-        response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/invoice")));
         return Response.ok(response.toString(2)).build();
     }
-    //Inovice ophalen met Id
+    //Inovice ophalen met OrderId
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getInvoice(@PathParam("id") long id)
     {
-        JSONObject response = new JSONObject();
-        Invoice invoice = repo.findWithOrderId(id);
-        response.put("invoice",invoice.toJSONObject());
-        response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/invoice/" + invoice.getId())));
-        return Response.ok(response.toString(2)).build();
+        return Response.ok(repo.findWithOrderId(id)).build();
+    }
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteInvoice(@PathParam("id") long id)
+    {
+        return Response.ok(repo.delete(id)).build();
     }
     //Invoice downloaden(//TODO: PDF teruggeven)
     @GET
@@ -89,23 +90,6 @@ public class InvoiceController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getInvoices()
     {
-        JSONObject response = new JSONObject();
-        response.put("invoices",repo.findAll());
-        response.put("_links",getLinks(URI.create("http://localhost:8080/webshop/api/invoice")));
-        return Response.ok(response.toString(2)).build();
-    }
-
-
-    //Links meegeven bij json response
-    private Map<String, URI> getLinks(URI self)
-    {
-        Map<String, URI> links = new HashMap<>();
-        String baseUri = "http://localhost:8080/webshop";
-        links.put("self",self);
-        links.put("save",URI.create(baseUri +"/api/invoice"));
-        links.put("delete",URI.create(baseUri + "/api/invoice"));
-        links.put("get",URI.create(baseUri + "/api/invoice/invoice-id"));
-        links.put("get all",URI.create(baseUri + "/api/invoice"));
-        return links;
+        return Response.ok(repo.findAll()).build();
     }
 }

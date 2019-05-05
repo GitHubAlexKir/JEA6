@@ -43,4 +43,11 @@ public class InvoiceRepository {
                 .setParameter("orderId", id)
                 .getSingleResult();
     }
+
+    public boolean delete(long id) {
+       Invoice invoiceToRemove = em.find(Invoice.class,id);
+       em.remove(invoiceToRemove);
+       em.flush();
+        return true;
+    }
 }
