@@ -6,4 +6,42 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
   <welcome-file-list>
     <welcome-file>welcome.jsp</welcome-file>
   </welcome-file-list>
+  <!-- JAAS BEGIN -->
+  <!--  login Config -->
+  <login-config>
+    <auth-method>FORM</auth-method>
+    <realm-name>JdbcRealmJEA6</realm-name>
+    <form-login-config>
+      <form-login-page>/JAASLogin.jsp</form-login-page>
+      <form-error-page>/login-error.html</form-error-page>
+    </form-login-config>
+  </login-config>
+  <!--  error not authorized page -->
+  <error-page>
+    <error-code>403</error-code>
+    <location>/not-authorized.html</location>
+  </error-page>
+  <error-page>
+    <error-code>401</error-code>
+    <location>/not-authorized.html</location>
+  </error-page>
+  <!--  authenticatie Worker/Owner -->
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>Secured Content WORKER AND OWNER</web-resource-name>
+      <url-pattern>/api/jaas/secure</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>Worker</role-name>
+      <role-name>Owner</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <!-- roles -->
+  <security-role>
+    <role-name>Worker</role-name>
+  </security-role>
+  <security-role>
+    <role-name>Owner</role-name>
+  </security-role>
+  <!-- JAAS END-->
 </web-app>
