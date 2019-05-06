@@ -62,6 +62,7 @@ public class JAASTest {
                 post("/jaas");
 
     }
+    // Owner role only success
     @Test
     public void ownerSecureSuccess(){
         String sessionId;
@@ -69,27 +70,21 @@ public class JAASTest {
                 expect().
                         statusCode(200).
                         when().
-                        get("/api/jaas/secure").sessionId();
+                        get("/api/jaas/owner").sessionId();
         expect().
-                statusCode(200).
+                statusCode(302).
                 given().
-                param("email", ownerEmail).
-                param("password", password).
+                param("j_username", ownerEmail).
+                param("j_password", password).
                 cookie("JSESSIONID", sessionId).
-                post("/jaas");
-        sessionId =
-                expect().
-                        statusCode(200).
-                        given().
-                        cookie("JSESSIONID", sessionId).
-                        when().
-                        get("/api/jaas/secure").sessionId();
+                post("/j_security_check");
         System.out.println("Authenticated owner session.id: " + sessionId);
         RestAssured.sessionId = sessionId;
         given()
                 .when().get("/api/jaas/owner").then().statusCode(200).body(equalTo("Owner role only"));
 
     }
+    // Owner role only fails because logged in with worker role
     @Test
     public void ownerSecureFails(){
 
@@ -98,25 +93,18 @@ public class JAASTest {
                 expect().
                         statusCode(200).
                         when().
-                        get("/api/jaas/secure").sessionId();
+                        get("/api/jaas/owner").sessionId();
         expect().
-                statusCode(200).
+                statusCode(302).
                 given().
-                param("email", workerEmail).
-                param("password", password).
+                param("j_username", workerEmail).
+                param("j_password", password).
                 cookie("JSESSIONID", sessionId).
-                post("/jaas");
-        sessionId =
-                expect().
-                        statusCode(200).
-                        given().
-                        cookie("JSESSIONID", sessionId).
-                        when().
-                        get("/api/jaas/secure").sessionId();
-        System.out.println("Authenticated owner session.id: " + sessionId);
+                post("/j_security_check");
+        System.out.println("Authenticated worker session.id: " + sessionId);
         RestAssured.sessionId = sessionId;
         given()
-                .when().get("/api/jaas/owner").then().statusCode(401);
+                .when().get("/api/jaas/owner").then().statusCode(403);
     }
 
 }

@@ -45,4 +45,10 @@ public class JAASController {
     public Response secure(@Context HttpServletRequest req) {
     return Response.ok().entity("secret").build();
     }
+
+    @GET
+    @Path("owner")
+    public String owner(){
+        return "Owner role only";
+    }
 }

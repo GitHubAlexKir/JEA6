@@ -36,6 +36,16 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
       <role-name>Owner</role-name>
     </auth-constraint>
   </security-constraint>
+  <!--  authenticatie Owner -->
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>Secured Content Owner</web-resource-name>
+      <url-pattern>/api/jaas/owner</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>Owner</role-name>
+    </auth-constraint>
+  </security-constraint>
   <!-- roles -->
   <security-role>
     <role-name>Worker</role-name>
