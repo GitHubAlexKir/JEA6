@@ -115,13 +115,15 @@
             },
             OrderShipped(order){
                 axios.post('api/order/sent',order).then(({data}) => {
-                    order = data.order;
+                    let orderupdated = data.order;
+                    const index = this.orders.findIndex(order => order.id === orderupdated.id);
+                    Vue.set(this.orders, index, orderupdated);
                     this.$swal.fire(
                         'Updated!',
-                        'order.id:' + order.id + ' verzonden met verwachte bezorgdatum: ' + order.expectedArrival,
+                        'order.id:' + orderupdated.id + ' verzonden met verwachte bezorgdatum: ' + orderupdated.expectedArrival,
                         'success'
                     );
-                    this.socket.send(JSON.stringify(order));
+                    this.socket.send(JSON.stringify(orderupdated));
                 });
             }
 

@@ -3170,7 +3170,7 @@ __webpack_require__.r(__webpack_exports__);
         });
         var link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
-        link.download = 'invoice.txt';
+        link.download = 'invoice' + orderId + '.txt';
         link.click();
       });
     }
@@ -3313,11 +3313,17 @@ __webpack_require__.r(__webpack_exports__);
 
       _axios__WEBPACK_IMPORTED_MODULE_0__["default"].post('api/order/sent', order).then(function (_ref3) {
         var data = _ref3.data;
-        order = data.order;
+        var orderupdated = data.order;
 
-        _this3.$swal.fire('Updated!', 'order.id:' + order.id + ' verzonden met verwachte bezorgdatum: ' + order.expectedArrival, 'success');
+        var index = _this3.orders.findIndex(function (order) {
+          return order.id === orderupdated.id;
+        });
 
-        _this3.socket.send(JSON.stringify(order));
+        Vue.set(_this3.orders, index, orderupdated);
+
+        _this3.$swal.fire('Updated!', 'order.id:' + orderupdated.id + ' verzonden met verwachte bezorgdatum: ' + orderupdated.expectedArrival, 'success');
+
+        _this3.socket.send(JSON.stringify(orderupdated));
       });
     }
   }

@@ -2,6 +2,7 @@ package authentication;
 
 import domain.authentication.User;
 import domain.response.JsonResponse;
+import repository.InvoiceRepository;
 import repository.UserRepository;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -22,7 +23,7 @@ import javax.ws.rs.core.Response;
 @Path("/jaas")
 public class JAASController {
     @EJB
-    private UserRepository userRepository;
+    private InvoiceRepository invoiceRepository;
 
     @GET
     @Path("logout")

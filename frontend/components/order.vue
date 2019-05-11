@@ -125,7 +125,7 @@
                     let blob = new Blob([data], { type: 'text/plain' });
                         let link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
-                    link.download = 'invoice.txt';
+                    link.download = 'invoice' + orderId+'.txt';
                     link.click();
                 });
             }

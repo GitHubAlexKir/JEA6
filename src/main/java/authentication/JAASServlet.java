@@ -25,12 +25,13 @@ import java.io.IOException;
 public class JAASServlet extends HttpServlet{
     @EJB
     private UserRepository userRepository;
-
+    //jaas login pagina laden
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RequestDispatcher view = request.getRequestDispatcher("JAASLogin.jsp");
         view.forward(request, response);
     }
+    //jaas login
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         JsonResponse json = new JsonResponse();
@@ -55,6 +56,7 @@ public class JAASServlet extends HttpServlet{
         json.setData(user);
         userRepository.detach(user);
         user.setPassword(null);
+        request.setAttribute("user",user);
         RequestDispatcher view = request.getRequestDispatcher("secure.jsp");
         view.forward(request, response);
 
