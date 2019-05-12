@@ -13,7 +13,7 @@ public class ReviewSetup {
         RestAssured.requestSpecification = new RequestSpecBuilder().addHeader("Authorization", "Bearer " + UserSetup.getOwnerToken()).build();
         ItemDTO itemDTO = new ItemDTO();
         itemDTO.setProductName("Test Item For ReviewTest");
-        itemDTO.setProductNumber(482797965504446L);
+        itemDTO.setProductNumber(4827504446L);
         itemDTO.setPrice(199.99);
         itemDTO.setStock(50);
         itemDTO.setWarehouseLocation("34C");

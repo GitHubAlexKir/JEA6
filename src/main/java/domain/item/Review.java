@@ -3,6 +3,9 @@ package domain.item;
 import domain.dto.ReviewDTO;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 /**
  * @author Alex
@@ -13,9 +16,10 @@ public class Review implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(nullable=false)
+    @NotNull(message = "Auteur mag niet leeg zijn.")
     private String author;
-    @Column(nullable = false)
+    @Min(value = 1,message = "Waardering moet minimaal 1 zijn.")
+    @Max(value = 5, message = "Waardering moet maximaal 5 zijn.")
     private int appreciation;
     @Column
     private String content;

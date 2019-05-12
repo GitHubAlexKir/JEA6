@@ -12,14 +12,16 @@ import org.json.JSONObject;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 /**
  * @author Alex
  * ItemController
@@ -78,6 +80,18 @@ public class ItemController {
     {
         JSONObject response = new JSONObject();
        Review review = new Review(reviewDTO);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        Set<ConstraintViolation<Review>> violations = validator.validate(review);
+        if (violations.size() > 0){
+            StringBuilder errorMessage = new StringBuilder();
+            for (ConstraintViolation<Review> violation : violations){
+                errorMessage.append(violation.getMessage() + "\n");
+                System.out.println(violation.getMessage());
+            }
+            response.put("errorMsg",errorMessage.toString());
+            return Response.status(409).entity(response.toString(2)).build();
+        }
         Item item = repo.find(id);
         item.getReviews().add(review);
         item = repo.save(item);

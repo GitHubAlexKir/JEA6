@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Alex
@@ -40,9 +41,11 @@ public class ReviewTest {
                 .when().post("/item/review/" + createdItem.getId()).then()
                 .statusCode(409)
                 .extract().response();
-        String expectedErrorMessage = "Auteur mag niet leeg zijn.\n" + "Waaardering mag niet leeg zijn.\n";
+        String expectedErrorMessageAppreciation =  "Waardering moet minimaal 1 zijn.";
+        String expectedErrorMessageAuthor =  "Auteur mag niet leeg zijn.";
         String errormessage  =  r.getBody().jsonPath().getString("errorMsg");
-        assertEquals(expectedErrorMessage,errormessage);
+        assertTrue(errormessage.contains(expectedErrorMessageAppreciation));
+        assertTrue(errormessage.contains(expectedErrorMessageAuthor));
         System.out.println();
 
     }
@@ -104,6 +107,8 @@ public class ReviewTest {
     @AfterClass
     public static void cleanUp() {
         if (createdItem != null) {
+            //Token setten: Alleen Owner role mag een item verwijderen
+            RestAssured.requestSpecification = new RequestSpecBuilder().addHeader("Authorization", "Bearer "+UserSetup.getOwnerToken()).build();
             given()
                     .when().delete("/item/" + createdItem.getId()).then()
                     .statusCode(200);
